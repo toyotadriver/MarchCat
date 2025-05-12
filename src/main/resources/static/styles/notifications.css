@@ -1,0 +1,8 @@
+.infobox{
+    display: flex;
+    width: max-content;
+    padding: 7px;
+}
+.infobox .ib-inner{
+    margin: auto;
+}

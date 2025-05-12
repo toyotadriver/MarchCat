@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charstet="UTF-8">
+    <title>Register</title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet">
+</head>
+<body>
+    <div id="wrapper">
+        <div class="m-col-el">
+            <span class="span-error-text" th:text="${registerMessage}"></span>
+        </div>
+        <div class="m-col-el">
+            <form id="div-form-login" action="/register" method="post">
+                Username: <input type="text" name="username"/><br/>
+                Password: <input type="text" name="password"/><br/>
+                <button class="button-submit" type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+@charset "UTF-8";
+.files-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+#fileList {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.file-item {
+    margin-bottom: 5px;
+}

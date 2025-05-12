@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="wrapper">
+        <div class="m-col-el">
+            <span class="span-error-text" th:text="${message}"></span>
+        </div>
+        <div class="m-col-el">
+            <form id="div-form-login" action="/login" method="post">
+                Username: <input type="text" name="username" /><br />
+                Password: <input type="text" name="password" /><br />
+                <button class="button-regular" type="submit">Log in</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
