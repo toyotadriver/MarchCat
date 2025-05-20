@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="wrapper">
+        <div class="m-col-el">
+            <span class="span-error-text" th:text="${message}"></span>
+        </div>
+        <div class="m-col-el">
+            <form id="div-form-login" action="/login" method="post" enctype="multipart/form-data">
+                File: <input type="file" name="file" /><br />
+                <button class="button-regular" type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

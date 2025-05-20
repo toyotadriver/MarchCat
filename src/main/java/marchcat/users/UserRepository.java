@@ -12,7 +12,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 	
 	@Modifying
 	@Query("INSERT INTO \"TESTusers\"(username, password) VALUES(:username, :password)")
-	boolean insertUser(String username, String password);
+	boolean insertUser(String name, String password);
 	
 	@Query("SELECT * FROM \"TESTusers\" WHERE username = :username AND password = :password")
 	User findUserByNameAndPassword(String username, String password);

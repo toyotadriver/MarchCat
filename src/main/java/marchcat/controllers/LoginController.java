@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import marchcat.users.Logged;
 import marchcat.users.LoginProcessor;
 
 @Controller
@@ -13,14 +14,22 @@ public class LoginController {
 	
 	private boolean loggedIn = false;
 	private LoginProcessor loginProcessor;
+	private Logged logged;
 	
-	public LoginController(LoginProcessor loginProcessor) {
+	public LoginController(
+			LoginProcessor loginProcessor,
+			Logged logged) {
 		this.loginProcessor = loginProcessor;
+		this.logged = logged;
 	}
 	
 	@GetMapping("/login")
 	public String viewLoginPage() {
-		return "login.html";
+		if(logged.getUsername() == null) {
+			return "login.html";
+		} else {
+			return "redirect:/main";
+		}
 	}
 	
 	@PostMapping("/login")
@@ -34,6 +43,7 @@ public class LoginController {
 			model.addAttribute("message", "Login or password is incorrect");
 			return "login.html";
 		} else {
+			logged.setUsername(username);
 			return "redirect:/main";
 		}
 	}

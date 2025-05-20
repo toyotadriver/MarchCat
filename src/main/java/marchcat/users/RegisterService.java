@@ -23,6 +23,34 @@ public class RegisterService {
 		this.userRepository = userRepository;
 	}
 	
+	/**
+	 * Register a user.
+	 * @return boolean success of the operation.
+	 * @throws FailedToRegisterException
+	 */
+	public boolean process() throws FailedToRegisterException {
+		
+		valid = validateLogin();
+		
+		if (valid) {
+			String hashedPW = HashGen.generatePassHash(password);
+			
+			boolean success = userRepository.insertUser(username, hashedPW);
+			
+			if(success) {
+				
+				return true;
+			} else {
+				throw new FailedToRegisterException("Failed to register user.");
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Validate login
+	 * @return success
+	 */
 	private boolean validateLogin() {
 		int unl = username.length();
 		int pwl = password.length();
@@ -38,31 +66,7 @@ public class RegisterService {
 		
 	}
 	
-	/**
-	 * Register a user.
-	 * @return boolean success of the operation.
-	 * @throws FailedToRegisterException
-	 */
-	public boolean process() throws FailedToRegisterException {
-		
-		valid = validateLogin();
-		
-		if (valid) {
-			String hashedPW = HashGen.generatePassHash(password);
-			
-			//boolean success = registerRepository.register();
-			
-			boolean success = userRepository.insertUser(username, hashedPW);
-			
-			if(success) {
-				return true;
-			} else {
-				throw new FailedToRegisterException("Failed to register user.");
-			}
-		}
-		return false;
-	}
-
+	
 	public String getUsername() {
 		return username;
 	}

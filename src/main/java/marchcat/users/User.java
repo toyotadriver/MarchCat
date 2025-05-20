@@ -7,7 +7,6 @@ public class User {
 	@Id
 	private int id;
 	private String username;
-	private String password;
 	private int role;
 
 	public String getUsername() {
@@ -24,14 +23,6 @@ public class User {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public int getRole() {
