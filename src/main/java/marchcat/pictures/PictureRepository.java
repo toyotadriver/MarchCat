@@ -1,13 +1,12 @@
 package marchcat.pictures;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
-public interface PictureRepository extends CrudRepository<Picture, Long> {
+public interface PictureRepository extends CrudRepository<Picture, Integer> {
 	
 	@Modifying
 	@Query("INSERT INTO pictures(name, rnd_name, ext) VALUES(:name, :rnd_name, :ext)")

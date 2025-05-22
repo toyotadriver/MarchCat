@@ -10,3 +10,6 @@ CREATE TABLE public.pictures
 
 ALTER TABLE IF EXISTS public.pictures
     OWNER to "Bogos";
+    
+ALTER TABLE IF EXISTS public.pictures
+    ADD COLUMN storage integer;

@@ -24,7 +24,7 @@ public class RegisterService {
 	}
 	
 	/**
-	 * Register a user.
+	 * Register the user.
 	 * @return boolean success of the operation.
 	 * @throws FailedToRegisterException
 	 */
@@ -38,7 +38,6 @@ public class RegisterService {
 			boolean success = userRepository.insertUser(username, hashedPW);
 			
 			if(success) {
-				
 				return true;
 			} else {
 				throw new FailedToRegisterException("Failed to register user.");

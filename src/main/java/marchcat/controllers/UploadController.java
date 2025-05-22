@@ -32,12 +32,20 @@ public class UploadController {
 	}
 	
 	@PostMapping("/upload")
-	public String postUpload(@RequestParam("file") MultipartFile file, Model model) {
+	public String postUpload(
+			@RequestParam("file") MultipartFile file,
+			Model model) {
 		if(logged.getUsername() != null) {
 			
 			uploadService.process(file);
+			
+			model.addAttribute("message", "Your image was uploaded!");
+			
+			return "upload.html";
+		}else {
+			return "redirect:/main";
 		}
 		
-		return "upload.html";
+		
 	}
 }

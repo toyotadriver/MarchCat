@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 public class Picture {
 
 	@Id
-	private long id;
+	private int id;
 	
 	private String name;
 	
@@ -17,7 +17,7 @@ public class Picture {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

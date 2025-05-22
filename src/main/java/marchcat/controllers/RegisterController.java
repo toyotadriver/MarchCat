@@ -6,21 +6,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import marchcat.users.Logged;
 import marchcat.users.RegisterService;
 import marchcat.users.exception.FailedToRegisterException;
 
 @Controller
 public class RegisterController {
-
-  private final RegisterService registerService;
 	
-	public RegisterController(RegisterService registerService) {
+  private final RegisterService registerService;
+  private Logged logged;
+	
+	public RegisterController(
+			RegisterService registerService,
+			Logged logged) {
 		this.registerService = registerService;
+		this.logged = logged;
 	}
 
 	@GetMapping("/register")
 	public String registerGet() {
-		return "register.html";
+		if(logged.getUsername() == null) {
+			return "register.html";
+		} else {
+			return "redirect.html";
+		}
+		
 	}
 	
 	@PostMapping("/register")
@@ -42,6 +52,7 @@ public class RegisterController {
 		
 
 		if(success){
+			logged.setUsername(username);
 			return "redirect.html";
 		} else {
 			model.addAttribute("message", registerService.message);

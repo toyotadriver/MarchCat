@@ -2,6 +2,9 @@ package marchcat.users;
 
 import org.springframework.data.annotation.Id;
 
+/**
+ * Entity of User for repository
+ */
 public class User {
 
 	@Id

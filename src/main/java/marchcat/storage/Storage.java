@@ -14,19 +14,21 @@ public interface Storage {
 	 */
 	public void init() throws StorageException;
 	/**
-	 * Store the file.
-	 * @return boolean success
+	 * Store the file with given name.
+	 * @param is
+	 * @param name
+	 * @throws StorageException
 	 */
-	public void store(InputStream is) throws StorageException;
+	public void store(InputStream is, String name) throws StorageException;
 	
 	/**
-	 * Delete the file
+	 * Delete the file.
 	 * @param path
 	 */
 	public void delete(Path path) throws StorageException;
 	
 	/**
-	 * Load file as resource
+	 * Load file as resource.
 	 * @param path
 	 * @return Resource
 	 */

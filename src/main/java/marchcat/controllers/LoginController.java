@@ -32,6 +32,13 @@ public class LoginController {
 		}
 	}
 	
+	/**
+	 * Check for login and set Logged username to logged in username
+	 * @param model
+	 * @param username
+	 * @param password
+	 * @return
+	 */
 	@PostMapping("/login")
 	public String enterLogin(Model model, 
 			@RequestParam String username,
@@ -43,7 +50,9 @@ public class LoginController {
 			model.addAttribute("message", "Login or password is incorrect");
 			return "login.html";
 		} else {
+			
 			logged.setUsername(username);
+			
 			return "redirect:/main";
 		}
 	}
