@@ -23,14 +23,14 @@ public interface Storage {
 	
 	/**
 	 * Delete the file.
-	 * @param path
+	 * @param name
 	 */
-	public void delete(Path path) throws StorageException;
+	public void delete(String name) throws StorageException;
 	
 	/**
 	 * Load file as resource.
 	 * @param path
 	 * @return Resource
 	 */
-	public Resource load(Path path) throws StorageException;
+	public Resource load(String name) throws StorageException;
 }

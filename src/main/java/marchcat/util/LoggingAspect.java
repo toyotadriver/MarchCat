@@ -6,10 +6,13 @@ import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+
+import marchcat.pictures.exception.PictureRepositoryException;
 
 @Aspect
 @Component
@@ -32,6 +35,11 @@ public class LoggingAspect {
 	public void logUsers(JoinPoint joinPoint) {
 		logger.info(logClassCallInfo(joinPoint));
 	}
+	
+	@AfterThrowing(pointcut = "mcPicturesExceptions()", throwing = "e")
+	public void logPicturesExceptions(JoinPoint joinPoint, Throwable e) {
+		logger.info(logExceptions(joinPoint, e));
+	}
 
 	private String logClassCallInfo(JoinPoint joinPoint) {
 		
@@ -44,6 +52,22 @@ public class LoggingAspect {
 		return out;
 	}
 	
+	/**
+	 * Log the exception and the cause (if != null).
+	 * @param joinPoint
+	 * @param e
+	 * @return
+	 */
+	private String logExceptions(JoinPoint joinPoint, Throwable e) {
+		StringBuilder message = new StringBuilder();
+		message.append(logClassCallInfo(joinPoint));
+		message.append("Thrown an exception: \n");
+		message.append(e.getMessage() + "\n");
+		if(e.getCause() != null)
+			message.append("Caused by: " + e.getCause().getMessage());
+		return message.toString();
+	}
+	
 	@Pointcut("execution(public * marchcat.*.*.*(..))")
 	private void mcAll() {}
 	
@@ -52,4 +76,7 @@ public class LoggingAspect {
 	
 	@Pointcut("execution(public * marchcat.controllers.*.*(..))")
 	private void mcControllers() {}
+	
+	@Pointcut("execution( * marchcat.pictures.*.*(..))")
+	private void mcPicturesExceptions() {}
 }

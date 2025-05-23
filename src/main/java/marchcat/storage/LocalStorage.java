@@ -24,7 +24,7 @@ public class LocalStorage implements Storage{
 	private int currentFolderFiles;
 	
 	
-	public LocalStorage() {
+	public LocalStorage() throws StorageException {
 		currentPathString = rootDirectory + "\\" + folderPrefix + currentFolderInt;
 		
 		Path folderPath = Paths.get(currentPathString);
@@ -64,18 +64,24 @@ public class LocalStorage implements Storage{
 			throw new StorageException("Failed to write inputStream to file", e);
 		}
 		
-		currentFolderInt++;
+		
 		
 	}
 
 	@Override
-	public void delete(Path path) throws StorageException{
-		// TODO Auto-generated method stub
+	public void delete(String name) throws StorageException{
+		Path filePath = Paths.get(currentPathString + File.separator + name);
+		try {
+			Files.delete(filePath);
+		} catch(IOException e) {
+			throw new StorageException("Error deleting file", e);
+		}
+		
 		
 	}
 
 	@Override
-	public Resource load(Path path) throws StorageException{
+	public Resource load(String name) throws StorageException{
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import marchcat.users.Logged;
@@ -35,8 +36,8 @@ public class RegisterController {
 	
 	@PostMapping("/register")
 	public String registerPost(
-			@RequestParam String username,
-			@RequestParam String password,
+			@RequestHeader String username,
+			@RequestHeader String password,
 			Model model) {
 		
 		registerService.setUsername(username);

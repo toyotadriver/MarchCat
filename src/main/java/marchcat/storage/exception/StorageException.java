@@ -1,6 +1,6 @@
 package marchcat.storage.exception;
 
-public class StorageException extends RuntimeException{
+public class StorageException extends Exception{
 
 	private static final long serialVersionUID = 7000291772691756871L;
 
