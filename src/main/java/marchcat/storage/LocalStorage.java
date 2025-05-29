@@ -15,6 +15,8 @@ import marchcat.storage.exception.StorageException;
 @Component
 public class LocalStorage implements Storage{
 	
+	private int storageId = 0;
+	
 	private String rootDirectory = "C:\\";
 	private String folderPrefix = "";
 	private String currentPathString;
@@ -99,5 +101,12 @@ public class LocalStorage implements Storage{
 		}
 		
 	}
+
+	@Override
+	public int getStorageId() {
+		return storageId;
+	}
+	
+	
 	
 }

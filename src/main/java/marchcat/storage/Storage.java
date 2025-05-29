@@ -33,4 +33,9 @@ public interface Storage {
 	 * @return Resource
 	 */
 	public Resource load(String name) throws StorageException;
+	/**
+	 * Get storage ID
+	 * @return
+	 */
+	public int getStorageId();
 }

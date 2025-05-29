@@ -12,6 +12,8 @@ public class Picture {
 	private String ext;
 	
 	private String rnd_name;	
+	
+	private int storage;
 
 	public long getId() {
 		return id;
@@ -43,6 +45,14 @@ public class Picture {
 
 	public void setRnd_name(String rnd_name) {
 		this.rnd_name = rnd_name;
+	}
+
+	public int getStorage() {
+		return storage;
+	}
+
+	public void setStorage(int storage) {
+		this.storage = storage;
 	}
 	
 	

@@ -12,6 +12,7 @@ import marchcat.pictures.exception.PictureValidateException;
 import marchcat.pictures.exception.UploadException;
 import marchcat.storage.Storage;
 import marchcat.storage.exception.StorageException;
+import marchcat.util.RandomGen;
 
 @Service
 @RequestScope
@@ -45,10 +46,13 @@ public class UploadService {
 			String filename = file.getOriginalFilename();
 
 			System.out.println("original filename: " + filename);
+			
+			Long fileSize = file.getSize();
+			String[] splittedName = splitName(filename);
 
 			Boolean valid = false;
 			try {
-				valid = validatePicture(file);
+				valid = validatePicture(splittedName, fileSize);
 			} catch (PictureValidateException e) {
 				// TO BE LOGGED
 			}
@@ -66,7 +70,11 @@ public class UploadService {
 			}
 			
 			Picture picture = new Picture();
-			
+			picture.setName(splittedName[0]);
+			picture.setExt(splittedName[1]);
+			picture.setRnd_name(RandomGen.randomString(20));
+			picture.setStorage(storage.getStorageId());
+						
 			Boolean written = writePicture(picture);
 			
 			if(written) {
@@ -86,24 +94,17 @@ public class UploadService {
 	}
 	
 	private boolean writePicture(Picture picture){
-		
-		
+		pictureRepository.insertPicture(picture);
 		
 		return true;
 	}
 
-	private boolean validatePicture(MultipartFile file) throws PictureValidateException {
-
-		//Dot needs to be escaped
-		for(String str : file.getOriginalFilename().split("\\.")) {
-			System.out.println("SOSAL?");
-			System.out.println(str);
-		}
+	private boolean validatePicture(String[] fullname, Long fileSize) throws PictureValidateException {
 		
-		String ext = file.getOriginalFilename().split("\\.")[1];
+		String ext = fullname[1];
 		for (String format : AVAILABLEFORMATS) {
 			if (ext.equals(format)) {
-				if (file.getSize() < MAXSIZE) {
+				if (fileSize < MAXSIZE) {
 					return true;
 				} else {
 					throw new PictureValidateException("The picture is too big");
@@ -112,4 +113,10 @@ public class UploadService {
 		}
 		throw new PictureValidateException("The picture's format is invalid");
 	}
+	
+	private String[] splitName(String fullname) {
+		String[] splitted = fullname.split("\\.");
+		return splitted;
+	}
+
 }
