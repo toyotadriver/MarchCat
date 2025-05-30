@@ -36,6 +36,11 @@ public class LoggingAspect {
 		logger.info(logClassCallInfo(joinPoint));
 	}
 	
+	@Before(value = "mcPictures()")
+	public void logPictures(JoinPoint joinPoint) {
+		logger.info(logClassCallInfo(joinPoint));
+	}
+	
 	@AfterThrowing(pointcut = "mcPicturesExceptions()", throwing = "e")
 	public void logPicturesExceptions(JoinPoint joinPoint, Throwable e) {
 		logger.info(logExceptions(joinPoint, e));
@@ -67,6 +72,9 @@ public class LoggingAspect {
 			message.append("Caused by: " + e.getCause().getMessage());
 		return message.toString();
 	}
+	
+	@Pointcut("execution(public * marchcat.pictures.*.*(..))")
+	private void mcPictures() {};
 	
 	@Pointcut("execution(public * marchcat.*.*.*(..))")
 	private void mcAll() {}

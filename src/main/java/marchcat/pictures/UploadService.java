@@ -2,9 +2,9 @@ package marchcat.pictures;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +30,7 @@ public class UploadService {
 		this.pictureRepository = pictureRepository;
 	}
 
-	@Transactional
+
 	public boolean process(MultipartFile file) {
 
 		InputStream is;
@@ -44,49 +44,47 @@ public class UploadService {
 			}
 			
 			String filename = file.getOriginalFilename();
+			
 
 			System.out.println("original filename: " + filename);
 			
+			
 			Long fileSize = file.getSize();
 			String[] splittedName = splitName(filename);
-
+			
+			String rndName = RandomGen.randomString(20);
+			System.out.println("Random filename: " + rndName + '.' + splittedName[1]);
+			
 			Boolean valid = false;
 			try {
 				valid = validatePicture(splittedName, fileSize);
 			} catch (PictureValidateException e) {
+				System.out.println(e.getMessage());
 				// TO BE LOGGED
 			}
 			if (valid) {
 				
 				try {
-					storage.store(is, filename);
+					storage.store(is, rndName  + '.' + splittedName[1]);
+					System.out.println("File stored!");
 				} catch (StorageException e) {
 					// TODO: handle exception
+					System.out.println("File cannot be stored");
+					System.out.println(e.getMessage());
 					return false;
 				}
 				
 			} else {
+				System.out.println("Pic isn't valid");
 				return false;
 			}
 			
-			Picture picture = new Picture();
-			picture.setName(splittedName[0]);
-			picture.setExt(splittedName[1]);
-			picture.setRnd_name(RandomGen.randomString(20));
-			picture.setStorage(storage.getStorageId());
+			
 						
-			Boolean written = writePicture(picture);
+
+			pictureRepository.insertPicture(filename, rndName, splittedName[1]);
 			
-			if(written) {
-				return true;
-			} else {
-				try {
-					storage.delete(filename);
-				} catch(StorageException e) {
-					//TO BE LOGGED
-				}
-				return false;
-			}
+			return true;
 			
 		} else {
 			throw new UploadException("The file is null");
@@ -94,7 +92,7 @@ public class UploadService {
 	}
 	
 	private boolean writePicture(Picture picture){
-		pictureRepository.insertPicture(picture);
+		//pictureRepository.insertPicture(picture);
 		
 		return true;
 	}

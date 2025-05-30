@@ -1,18 +1,22 @@
 package marchcat.pictures;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table(value = "pictures")
 public class Picture {
 
 	@Id
 	private int id;
 	
+	@Column("name")
 	private String name;
-	
+	@Column("ext")
 	private String ext;
-	
+	@Column("rnd_name")
 	private String rnd_name;	
-	
+	@Column("storage")
 	private int storage;
 
 	public long getId() {

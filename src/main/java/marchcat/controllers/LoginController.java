@@ -60,7 +60,7 @@ public class LoginController {
 
 		loggedIn = loginProcessor.login(username, password);
 		if (!loggedIn) {
-			String message = "RESPONSE: INCORRECT LOGIN OR PASSWORD";
+			String message = "Incorrect login or password";
 
 			return ResponseEntity
 					.status(400)
