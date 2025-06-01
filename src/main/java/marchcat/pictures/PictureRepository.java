@@ -8,9 +8,9 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface PictureRepository extends CrudRepository<Picture, Integer> {
 	
-	@Modifying
-	@Query("INSERT INTO pictures(name, rnd_name, ext) VALUES(:name, :rnd_name, :ext)")
-	void insertPicture(String name, String rnd_name, String ext);
+	//@Modifiyng was deleted because of RETURNING id
+	@Query("INSERT INTO pictures(name, rnd_name, ext) VALUES(:name, :rnd_name, :ext) RETURNING id")
+	int insertPicture(String name, String rnd_name, String ext);
 	
 	//IDK
 	@Modifying
@@ -23,6 +23,6 @@ public interface PictureRepository extends CrudRepository<Picture, Integer> {
 	@Query("SELECT * FROM pictures WHERE ext=:ext")
 	List<Picture> findPicturesByExt(String ext);
 	
-	@Query("SELECT nextval(pg_get_serial_sequence('pictures', 'id'))")
-	int selectNextId();
+	@Query("SELECT currval(pg_get_serial_sequence('pictures', 'id'))")
+	int selectCurrId();
 }
