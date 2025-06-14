@@ -19,7 +19,7 @@ public class DownloadController {
 
 	@GetMapping("/link/{picLink}")
 	public Picture getPicture(
-			@PathVariable("picLink") String picLink) {
+			@PathVariable String picLink) {
 		
 		Picture picture = null;
 		try {

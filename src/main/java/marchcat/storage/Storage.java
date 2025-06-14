@@ -1,7 +1,6 @@
 package marchcat.storage;
 
 import java.io.InputStream;
-import java.nio.file.Path;
 
 import org.springframework.core.io.Resource;
 
@@ -14,12 +13,13 @@ public interface Storage {
 	 */
 	public void init() throws StorageException;
 	/**
-	 * Store the file with given name.
+	 * Store the file with the given name and return folder
 	 * @param is
 	 * @param name
+	 * @return int
 	 * @throws StorageException
 	 */
-	public void store(InputStream is, String name) throws StorageException;
+	public int store(InputStream is, String name) throws StorageException;
 	
 	/**
 	 * Delete the file.
@@ -38,4 +38,10 @@ public interface Storage {
 	 * @return
 	 */
 	public int getStorageId();
+	
+	/**
+	 * Get storage Repository
+	 * @return
+	 */
+	public StorageRepository getStorageRepository();
 }

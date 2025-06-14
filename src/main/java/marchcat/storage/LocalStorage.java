@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import marchcat.storage.exception.StorageException;
 
-@Component
+@Component("0")
 public class LocalStorage implements Storage{
 	
 	private int storageId = 0;
@@ -20,13 +20,18 @@ public class LocalStorage implements Storage{
 	private String rootDirectory = "C:\\";
 	private String folderPrefix = "";
 	private String currentPathString;
+	private final LocalStorageRepository localStorageRepository;
 	private int maxFiles = 10;
+	
+	public int counter;
 	
 	private int currentFolderInt = 1;
 	private int currentFolderFiles;
 	
 	
-	public LocalStorage() throws StorageException {
+	public LocalStorage(LocalStorageRepository localStorageRepository) throws StorageException {
+		this.localStorageRepository = localStorageRepository;
+		
 		currentPathString = rootDirectory + "\\" + folderPrefix + currentFolderInt;
 		
 		Path folderPath = Paths.get(currentPathString);
@@ -48,9 +53,9 @@ public class LocalStorage implements Storage{
 	}
 
 	@Override
-	public synchronized void store(InputStream is, String name) throws StorageException{
+	public synchronized int store(InputStream is, String name) throws StorageException{
 		try {
-			if(currentFolderFiles == maxFiles) {
+			if(currentFolderFiles >= maxFiles) {
 			newFolder();
 		}
 		} catch(StorageException e) {
@@ -66,7 +71,7 @@ public class LocalStorage implements Storage{
 			throw new StorageException("Failed to write inputStream to file", e);
 		}
 		
-		
+		return currentFolderInt;
 		
 	}
 
@@ -85,6 +90,8 @@ public class LocalStorage implements Storage{
 	@Override
 	public Resource load(String name) throws StorageException{
 		// TODO Auto-generated method stub
+		
+		
 		return null;
 	}
 	
@@ -107,6 +114,9 @@ public class LocalStorage implements Storage{
 		return storageId;
 	}
 	
-	
+	@Override
+	public StorageRepository getStorageRepository() {
+		return localStorageRepository;
+	}
 	
 }

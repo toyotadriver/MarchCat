@@ -2,15 +2,16 @@ package marchcat.pictures;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import marchcat.pictures.exception.PictureValidateException;
 import marchcat.pictures.exception.UploadException;
 import marchcat.storage.Storage;
+import marchcat.storage.StorageRepository;
 import marchcat.storage.exception.StorageException;
 import marchcat.util.RandomGen;
 
@@ -25,17 +26,21 @@ public class UploadService {
 	private final Storage storage;
 	private final PictureRepository pictureRepository;
 	private final LinkRepository linkRepository;
+	private final StorageRepository storageRepository;
 
 	public UploadService(
 			Storage storage,
 			PictureRepository pictureRepository,
-			LinkRepository linkRepository) {
+			LinkRepository linkRepository,
+			StorageRepository storageRepository) {
 		this.storage = storage;
 		this.pictureRepository = pictureRepository;
 		this.linkRepository = linkRepository;
+		this.storageRepository = storage.getStorageRepository();
 	}
 
-	public boolean process(MultipartFile file) {
+	@Transactional
+	public boolean process(MultipartFile file) throws UploadException {
 
 		InputStream is;
 		if (!file.isEmpty()) {
@@ -64,10 +69,12 @@ public class UploadService {
 				System.out.println(e.getMessage());
 				// TO BE LOGGED
 			}
+			
+			//IDKs
+			int currentFolder;
 			if (valid) {
-
 				try {
-					storage.store(is, rndName + '.' + splittedName[1]);
+					currentFolder = storage.store(is, rndName + '.' + splittedName[1]);
 					System.out.println("File stored!");
 				} catch (StorageException e) {
 					// TODO: handle exception
@@ -81,9 +88,14 @@ public class UploadService {
 				return false;
 			}
 
-			int id = pictureRepository.insertPicture(filename, rndName, splittedName[1]);
+			
+			int storageId = storage.getStorageId();
+			int id = pictureRepository.insertPicture(filename, rndName, splittedName[1], storageId);
+			String storageName = storageRepository.getStorageName(storageId);
+			storageRepository.insertFile(id, currentFolder);
 			linkRepository.insertLink(id, RandomGen.randomString(20));
 
+			
 			return true;
 
 		} else {

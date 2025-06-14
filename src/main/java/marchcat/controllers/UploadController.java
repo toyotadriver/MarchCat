@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import marchcat.pictures.UploadService;
+import marchcat.pictures.exception.UploadException;
 import marchcat.users.Logged;
 
 @Controller
@@ -37,9 +38,12 @@ public class UploadController {
 			Model model) {
 		if(logged.getUsername() != null) {
 			
-			uploadService.process(file);
-			
-			model.addAttribute("message", "Your image was uploaded!");
+			try {
+				uploadService.process(file);
+				model.addAttribute("message", "Your image was uploaded!");
+			} catch (UploadException e) {
+				model.addAttribute("message", "The file is null!");
+			}
 			
 			return "upload.html";
 		}else {
