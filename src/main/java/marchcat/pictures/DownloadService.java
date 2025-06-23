@@ -1,12 +1,15 @@
 package marchcat.pictures;
 
+import java.io.IOException;
 import java.io.InputStream;
 
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
 import marchcat.pictures.exception.PictureRepositoryException;
 import marchcat.storage.Storage;
+import marchcat.storage.exception.StorageException;
 import marchcat.util.RandomGen;
 
 @Service
@@ -42,6 +45,19 @@ public class DownloadService {
 			throw new PictureRepositoryException("The link is null");
 		}
 
+	}
+	
+	public byte[] getBytesOfPicture(String fileName, String ext) throws PictureRepositoryException {
+		try {
+			
+			Resource resource = storage.load(fileName + '.' + ext);
+			return resource.getContentAsByteArray();
+			
+		} catch (StorageException | IOException e) {
+			throw new PictureRepositoryException(e.getMessage(), e.getCause());
+		}
+		
+		
 	}
 
 	private boolean validateLink(String linkStr) {

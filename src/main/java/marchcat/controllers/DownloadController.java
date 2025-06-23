@@ -1,5 +1,6 @@
 package marchcat.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,19 +18,43 @@ public class DownloadController {
 		this.downloadService = downloadService;
 	}
 
+	//TODO method to get the Picture and output information
+//	@GetMapping("/link/{picLink}")
+//	public Picture getPicture(
+//			@PathVariable String picLink) {
+//		
+//		Picture picture = null;
+//		try {
+//			picture = downloadService.link(picLink);
+//		} catch (PictureRepositoryException e) {
+//			// TODO: handle exception
+//		}
+//		
+//		//TODO
+//		
+//		return picture;
+//	}
+	
 	@GetMapping("/link/{picLink}")
-	public Picture getPicture(
-			@PathVariable String picLink) {
+	public ResponseEntity<byte[]> getPicture(
+			@PathVariable String picLink){
 		
-		Picture picture = null;
+		byte[] pictureBytes = null;
 		try {
-			picture = downloadService.link(picLink);
+			Picture picture = downloadService.link(picLink);
+			String filename = picture.getRnd_name();
+			String ext = picture.getExt();
+			
+			pictureBytes = downloadService.getBytesOfPicture(filename, ext);
 		} catch (PictureRepositoryException e) {
-			// TODO: handle exception
+			//TODO handle
 		}
 		
-		//TODO
 		
-		return picture;
+		
+		return ResponseEntity
+			.status(200)
+			.body(pictureBytes);
 	}
+	
 }
