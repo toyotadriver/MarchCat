@@ -12,8 +12,6 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import marchcat.pictures.exception.PictureRepositoryException;
-
 @Aspect
 @Component
 public class LoggingAspect {
@@ -40,9 +38,27 @@ public class LoggingAspect {
 	public void logPictures(JoinPoint joinPoint) {
 		logger.info(logClassCallInfo(joinPoint));
 	}
+	@Before(value = "mcStorage()")
+	public void logStorage(JoinPoint joinPoint) {
+		logger.info(logClassCallInfo(joinPoint));
+	}
+	@AfterThrowing(value = "mcStorage()")
+	public void logStorageExceptions(JoinPoint joinPoint) {
+		logger.info(logClassCallInfo(joinPoint));
+	}
 	
 	@AfterThrowing(pointcut = "mcPicturesExceptions()", throwing = "e")
 	public void logPicturesExceptions(JoinPoint joinPoint, Throwable e) {
+		logger.info(logExceptions(joinPoint, e));
+	}
+	
+	@AfterThrowing(pointcut = "mcControllersExceptions()", throwing = "e")
+	public void logControllersExceptions(JoinPoint joinPoint, Throwable e) {
+		logger.info(logExceptions(joinPoint, e));
+	}
+	
+	@AfterThrowing(pointcut = "mcStorage()", throwing = "e")
+	public void logStorageExceptions(JoinPoint joinPoint, Throwable e) {
 		logger.info(logExceptions(joinPoint, e));
 	}
 
@@ -82,9 +98,16 @@ public class LoggingAspect {
 	@Pointcut("execution(public * marchcat.users.*.*(..))")
 	private void mcUsers() {}
 	
-	@Pointcut("execution(public * marchcat.controllers.*.*(..))")
+	@Pointcut("execution( * marchcat.controllers.*.*(..))")
 	private void mcControllers() {}
+	
+	@Pointcut("execution( * marchcat.controllers.*.*(..))")
+	private void mcControllersExceptions() {}
 	
 	@Pointcut("execution( * marchcat.pictures.*.*(..))")
 	private void mcPicturesExceptions() {}
+	
+	@Pointcut("execution( * marchcat.storage.*.*(..))")
+	private void mcStorage() {}
+
 }

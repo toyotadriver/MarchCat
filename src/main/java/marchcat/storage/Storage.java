@@ -32,7 +32,7 @@ public interface Storage {
 	 * @param path
 	 * @return Resource
 	 */
-	public Resource load(String name) throws StorageException;
+	public InputStream load(String name) throws StorageException;
 	/**
 	 * Get storage ID
 	 * @return

@@ -3,7 +3,6 @@ package marchcat.pictures;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -20,10 +19,7 @@ public class DownloadService {
 	private final LinkRepository linkRepository;
 	private final Storage storage;
 
-	public DownloadService(
-			PictureRepository pictureRepository,
-			LinkRepository linkRepository,
-			Storage storage) {
+	public DownloadService(PictureRepository pictureRepository, LinkRepository linkRepository, Storage storage) {
 		this.pictureRepository = pictureRepository;
 		this.linkRepository = linkRepository;
 		this.storage = storage;
@@ -34,30 +30,32 @@ public class DownloadService {
 		Link link = linkRepository.getLinkByLink(linkStr);
 		Picture picture;
 
-		if (link != null && validateLink(linkStr)) {
+		if (link != null) {
+			if (validateLink(linkStr)) {
 
-			int id = link.getId();
-			picture = pictureRepository.findPictureById(id);
-			
-			
-			return picture;
+				int id = link.getId();
+				picture = pictureRepository.findPictureById(id);
+
+				return picture;
+			} else {
+				throw new PictureRepositoryException("The link is invalid");
+			}
 		} else {
 			throw new PictureRepositoryException("The link is null");
 		}
 
 	}
-	
-	public byte[] getBytesOfPicture(String fileName, String ext) throws PictureRepositoryException {
-		try {
+
+	public byte[] getInputStreamOfPicture(String fileName, String ext) throws PictureRepositoryException {
+		
+		try(InputStream ins = storage.load(fileName + '.' + ext);) {
 			
-			Resource resource = storage.load(fileName + '.' + ext);
-			return resource.getContentAsByteArray();
-			
+			return ins.readAllBytes();
+
 		} catch (StorageException | IOException e) {
-			throw new PictureRepositoryException(e.getMessage(), e.getCause());
+			throw new PictureRepositoryException("Pic repo exception" + e.getMessage(), e.getCause());
 		}
-		
-		
+
 	}
 
 	private boolean validateLink(String linkStr) {
@@ -66,13 +64,13 @@ public class DownloadService {
 
 		for (int i = 0; i < linkStr.length(); i++) {
 			actual = false;
-			for(int j = 0; j < chars.length(); j++) {
-				if(linkStr.charAt(i) == chars.charAt(j)) {
+			for (int j = 0; j < chars.length(); j++) {
+				if (linkStr.charAt(i) == chars.charAt(j)) {
 					actual = true;
 					break;
 				}
 			}
-			if(actual == false) {
+			if (actual == false) {
 				return false;
 			}
 		}

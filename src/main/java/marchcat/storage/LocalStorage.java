@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import marchcat.storage.exception.StorageException;
@@ -26,6 +25,7 @@ public class LocalStorage implements Storage{
 	public int counter;
 	
 	private int currentFolderInt = 1;
+	//TODO need to get this from table
 	private int currentFolderFiles;
 	
 	
@@ -88,11 +88,21 @@ public class LocalStorage implements Storage{
 	}
 
 	@Override
-	public Resource load(String name) throws StorageException{
-		// TODO Auto-generated method stub
+	public InputStream load(String fullName) throws StorageException{
 		
-		
-		return null;
+		Path path = Paths.get(rootDirectory + currentFolderInt + File.separator + fullName);
+		try {
+			InputStream ins = Files.newInputStream(path);
+			
+			if(ins == null) {
+				throw new StorageException("InputStream is null!");
+			}
+			
+			return ins;
+		} catch (IOException e) {
+			
+			throw new StorageException("Failed to get inputStream from file: " + e.getMessage());
+		}
 	}
 	
 	/**

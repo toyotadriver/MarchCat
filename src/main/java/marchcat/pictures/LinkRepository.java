@@ -10,7 +10,7 @@ public interface LinkRepository extends CrudRepository<Link, Integer> {
 	@Query("INSERT INTO links(id, link) VALUES(:id, :link)")
 	void insertLink(int id, String link);
 	
-	@Query("SELECT * FROM links WHERE link = :link")
+	//@Query("SELECT * FROM links WHERE link = :link")
 	Link getLinkByLink(String link);
 	
 	@Query("SELECT * FROM links WHERE id = :id")
