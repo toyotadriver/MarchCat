@@ -40,7 +40,7 @@ public class UploadService {
 	}
 
 	@Transactional
-	public boolean process(MultipartFile file) throws UploadException {
+	public boolean process(MultipartFile file, int userId) throws UploadException {
 
 		InputStream is;
 		if (!file.isEmpty()) {
@@ -94,6 +94,8 @@ public class UploadService {
 			String storageName = storageRepository.getStorageName(storageId);
 			storageRepository.insertFile(id, currentFolder);
 			linkRepository.insertLink(id, RandomGen.randomString(20));
+			
+			pictureRepository.insertPictureIntoAccount(id, userId);
 
 			
 			return true;

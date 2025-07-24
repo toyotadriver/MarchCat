@@ -39,7 +39,7 @@ public class UploadController {
 		if(logged.getUsername() != null) {
 			
 			try {
-				uploadService.process(file);
+				uploadService.process(file, logged.getId());
 				model.addAttribute("message", "Your image was uploaded!");
 			} catch (UploadException e) {
 				model.addAttribute("message", "The file is null!");

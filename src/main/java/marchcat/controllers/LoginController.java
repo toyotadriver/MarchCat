@@ -66,7 +66,8 @@ public class LoginController {
 					.status(400)
 					.body(message);
 		} else {
-			logged.setUsername(username);
+			logged.setId(loginProcessor.getUser().getId());
+			logged.setUsername(loginProcessor.getUser().getUsername());
 			return ResponseEntity
 					.status(200)
 					.body(null);

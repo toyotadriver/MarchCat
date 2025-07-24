@@ -1,5 +1,7 @@
 package marchcat.pictures;
 
+import java.sql.Timestamp;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -16,6 +18,8 @@ public class Picture {
 	private String ext;
 	@Column("rnd_name")
 	private String rnd_name;	
+	@Column("dou")
+	private Timestamp timestamp;
 	@Column("storage")
 	private int storage;
 
@@ -57,6 +61,10 @@ public class Picture {
 
 	public void setStorage(int storage) {
 		this.storage = storage;
+	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
 	}
 	
 	

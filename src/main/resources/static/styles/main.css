@@ -137,6 +137,10 @@ nav a{
     width: 100%;
     height: auto;
 }
+.picture-preivew{
+    height: 30px;
+    width: auto;
+}
 .med-content{
     display: block;
     margin-top: 100px;
@@ -257,4 +261,9 @@ input:focus{
     position: relative;
     color: rgb(220, 60, 60);
     font-size: 20px;
+}
+.control-svg{
+    height: 50px;
+    width: auto;
+    cursor: pointer;
 }

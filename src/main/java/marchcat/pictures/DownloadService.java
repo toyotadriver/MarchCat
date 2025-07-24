@@ -35,6 +35,7 @@ public class DownloadService {
 
 				int id = link.getId();
 				picture = pictureRepository.findPictureById(id);
+				System.out.println(picture.getTimestamp().toString());
 
 				return picture;
 			} else {

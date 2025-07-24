@@ -1,6 +1,4 @@
 window.onload = function () {
-    console.log('sosal');
-
     document.getElementById('div-form-login').addEventListener('submit', function (event) {
         event.preventDefault();
 

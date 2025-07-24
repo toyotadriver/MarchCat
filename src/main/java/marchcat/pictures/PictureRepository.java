@@ -2,6 +2,7 @@ package marchcat.pictures;
 
 import java.util.List;
 
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -19,9 +20,16 @@ public interface PictureRepository extends CrudRepository<Picture, Integer> {
 	//TODO FIND LINK IN THE BASE ON INTERSECTION WITH pictures, beacuse id is foreign key in links
 	Picture findPictureById(int id);
 	
+	@Query("SELECT * FROM pictures p JOIN accountPictures a WHERE a.userId=:userId")
+	Picture[] findPicturesByAccount(int userId);
+	
 	@Query("SELECT * FROM pictures WHERE ext=:ext")
 	List<Picture> findPicturesByExt(String ext);
 	
 	@Query("SELECT currval(pg_get_serial_sequence('pictures', 'id'))")
 	int selectCurrId();
+	
+	@Modifying
+	@Query("INSERT INTO accountPictures(user_id, picture_id) VALUES(:userId, :pictureId)")
+	boolean insertPictureIntoAccount(int pictureId, int userId);
 }
