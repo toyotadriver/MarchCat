@@ -42,7 +42,7 @@ public class AccountController {
 		
 		System.out.println("User's 0 picture name: " + picturesOfAccount[0].getRnd_name());
 		
-		model.addAttribute(model);
+		model.addAttribute("picturesOfAccount", picturesOfAccount);
 		
 		return "account.html";
 	}

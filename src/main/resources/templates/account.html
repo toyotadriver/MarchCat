@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+</head>
+<body>
+    <div id="wrapper">
+        <div class="m-col-el">
+            <div id="tableContainer">
+                <div class="picturesDiv">
+                    <table id="picturesTable">
+                      <tr>
+                        <th>№</th>
+                        <th>Preview</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Functions</th>
+                    </tr>
+                    <tr th:each="picture, i : ${picturesOfAccount}">
+                        <td th:text="${i.index}"></td>
+                        <td><img class="picture-preview" th:src="@{/images/placeholder_small.jpg}"></td>
+                        <td th:text="${picture.getRnd_name()}"></td>
+                        <td th:text="${#dates.format(picture.getTimestamp(), 'dd-MMM-yyyy HH:mm')}"></td>
+                        <td>
+                            <img class="control-svg renameBt" id="rename" th:src="@{/svg/pen.svg}" onclick="alert('NOT IMPLEMENTED YET')">
+                            <img class="control-svg linkBt" id="link" th:src="@{/svg/link.svg}" onclick="alert('NOT IMPLEMENTED YET')">
+                            <img class="control-svg deleteBt" id="delete" th:src="@{/svg/cross.svg}" onclick="alert('NOT IMPLEMENTED YET')">
+                        </td>
+                    </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -20,7 +20,7 @@ public interface PictureRepository extends CrudRepository<Picture, Integer> {
 	//TODO FIND LINK IN THE BASE ON INTERSECTION WITH pictures, beacuse id is foreign key in links
 	Picture findPictureById(int id);
 	
-	@Query("SELECT * FROM pictures p JOIN accountPictures a WHERE a.userId=:userId")
+	@Query("SELECT * FROM pictures p JOIN accountPictures a ON p.id = a.picture_id WHERE a.user_id=:userId ORDER BY dou DESC")
 	Picture[] findPicturesByAccount(int userId);
 	
 	@Query("SELECT * FROM pictures WHERE ext=:ext")
