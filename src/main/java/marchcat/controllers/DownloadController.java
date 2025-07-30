@@ -42,7 +42,6 @@ public class DownloadController {
 	@GetMapping("/link/{picLink}")
 	public ResponseEntity<byte[]> getPicture(@PathVariable String picLink) {
 
-		InputStream ins;
 		try {
 			Picture picture = downloadService.link(picLink);
 			String filename = picture.getRnd_name();

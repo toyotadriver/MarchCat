@@ -22,8 +22,10 @@ public class Picture {
 	private Timestamp timestamp;
 	@Column("storage")
 	private int storage;
+	@Column("link")
+	private String link;
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -65,6 +67,10 @@ public class Picture {
 
 	public Timestamp getTimestamp() {
 		return timestamp;
+	}
+
+	public String getLink() {
+		return link;
 	}
 	
 	

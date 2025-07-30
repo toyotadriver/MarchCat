@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <link th:href="@{/styles/main.css}" rel="stylesheet" />
+    <link th:href="@{/styles/notifications.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/picturesList.js}"></script>
 </head>
 <body>
     <div id="wrapper">
@@ -25,7 +27,7 @@
                         <td th:text="${#dates.format(picture.getTimestamp(), 'dd-MMM-yyyy HH:mm')}"></td>
                         <td>
                             <img class="control-svg renameBt" id="rename" th:src="@{/svg/pen.svg}" onclick="alert('NOT IMPLEMENTED YET')">
-                            <img class="control-svg linkBt" id="link" th:src="@{/svg/link.svg}" onclick="alert('NOT IMPLEMENTED YET')">
+                            <img class="control-svg linkBt" id="link" th:attr="data-link=${picture.getLink()}" th:src="@{/svg/link.svg}">
                             <img class="control-svg deleteBt" id="delete" th:src="@{/svg/cross.svg}" onclick="alert('NOT IMPLEMENTED YET')">
                         </td>
                     </tr>

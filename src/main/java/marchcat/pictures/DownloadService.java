@@ -35,7 +35,6 @@ public class DownloadService {
 
 				int id = link.getId();
 				picture = pictureRepository.findPictureById(id);
-				System.out.println(picture.getTimestamp().toString());
 
 				return picture;
 			} else {
@@ -57,6 +56,11 @@ public class DownloadService {
 			throw new PictureRepositoryException("Pic repo exception" + e.getMessage(), e.getCause());
 		}
 
+	}
+	
+	public String getPictureLinkStringById(int id) {
+		
+		return linkRepository.getLinkById(id).getLink();
 	}
 
 	private boolean validateLink(String linkStr) {
