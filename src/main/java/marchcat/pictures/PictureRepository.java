@@ -27,6 +27,11 @@ public interface PictureRepository extends CrudRepository<Picture, Integer> {
 			+ "WHERE a.user_id=:userId ORDER BY dou DESC")
 	Picture[] findPicturesByAccount(int userId);
 	
+	@Query("SELECT * FROM pictures p "
+			+ "JOIN accountPictures a ON p.id = a.picture_id "
+			+ "WHERE p.id=:picId AND a.user_id=:accId")
+	Picture findPictureFromAccount(int accId, int picId);
+	
 	@Query("SELECT * FROM pictures WHERE ext=:ext")
 	List<Picture> findPicturesByExt(String ext);
 	
@@ -36,4 +41,8 @@ public interface PictureRepository extends CrudRepository<Picture, Integer> {
 	@Modifying
 	@Query("INSERT INTO accountPictures(user_id, picture_id) VALUES(:userId, :pictureId)")
 	boolean insertPictureIntoAccount(int pictureId, int userId);
+	
+	@Modifying
+	@Query("DELETE FROM pictures WHERE id=:picId")
+	void deletePictureById(int picId);
 }

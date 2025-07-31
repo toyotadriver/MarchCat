@@ -28,7 +28,7 @@
                         <td>
                             <img class="control-svg renameBt" id="rename" th:src="@{/svg/pen.svg}" onclick="alert('NOT IMPLEMENTED YET')">
                             <img class="control-svg linkBt" id="link" th:attr="data-link=${picture.getLink()}" th:src="@{/svg/link.svg}">
-                            <img class="control-svg deleteBt" id="delete" th:src="@{/svg/cross.svg}" onclick="alert('NOT IMPLEMENTED YET')">
+                            <img class="control-svg deleteBt" id="delete" th:attr="data-link=${picture.getLink()}" th:src="@{/svg/cross.svg}">
                         </td>
                     </tr>
                     </table>

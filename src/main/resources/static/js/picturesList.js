@@ -2,7 +2,7 @@ window.onload = function () {
 
     const renameBts = document.getElementsByClassName('renameBt')
     const linkBts = document.querySelectorAll('.linkBt')
-    const deleteBts = document.getElementsByClassName('deleteBt')
+    const deleteBts = document.querySelectorAll('.deleteBt')
 
     const notif = document.createElement('div');
     notif.classList.add('infobox');
@@ -13,7 +13,7 @@ window.onload = function () {
         linkBt.addEventListener('click', (clickEvent) => {
 
             console.log("Link copied!");
-            
+
             navigator.clipboard.writeText(
                 //TODO MUST CHANGE IT WHEN NEEDED
                 //http://localhost:8080
@@ -22,23 +22,45 @@ window.onload = function () {
                 window.location.port + "/link/" +
                 linkBt.getAttribute('data-link'));
 
-            if(notif.style.display = 'none'){
+            if (notif.style.display = 'none') {
                 notif.style.display = 'flex';
-                setTimeout(() => {notif.style.display = 'none'}, 2000);
+                setTimeout(() => { notif.style.display = 'none' }, 2000);
             }
-        })})
-    }
+        })
+    })
 
-    action = function(request, pictureName){
-        var xhr = new XMLHttpRequest();
-        xhr.open(request, 'account')
-        xhr.setRequestHeader('pictureName', pictureName)
-        xhr.send();
+    deleteBts.forEach(deleteBt => {
+        deleteBt.addEventListener('click', (clickEvent) => {
+            console.log("DELETE CLICK!");
+            
+            console.log("Requested to delete file")
+
+            action('DELETE', deleteBt.getAttribute('data-link'))
+        })
+    })
+
+    function action(request, pictureLink) {
+        console.log("DELETE!");
         
-        xhr.onload = function(){
-            if(xhr.status == 200){
+        var xhr = new XMLHttpRequest();
+        xhr.open(request, 'account/' + pictureLink)
+        xhr.setRequestHeader('pictureName', pictureLink)
+        xhr.send();
+
+        xhr.onload = function () {
+            if (xhr.status == 200) {
+                if (notif.style.display = 'none') {
+                    notif.textContent = 'File requested to delete!';
+                    notif.style.display = 'flex';
+                    setTimeout(() => { notif.style.display = 'none' }, 2000);
+                }
+
                 location.reload();
             }
         }
     }
+
+
+}
+
 
