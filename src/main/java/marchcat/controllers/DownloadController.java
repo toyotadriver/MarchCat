@@ -44,12 +44,11 @@ public class DownloadController {
 
 		try {
 			Picture picture = downloadService.link(picLink);
-			String filename = picture.getRnd_name();
 			String ext = picture.getExt();
 
 			String type = "image/" + ext;
 
-			byte[] bytes = downloadService.getInputStreamOfPicture(filename, ext);
+			byte[] bytes = downloadService.getInputStreamOfPicture(picture);
 
 			return ResponseEntity.status(200).contentType(MediaType.parseMediaType(type)).body(bytes);
 

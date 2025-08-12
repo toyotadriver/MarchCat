@@ -2,8 +2,7 @@ package marchcat.storage;
 
 import java.io.InputStream;
 
-import org.springframework.core.io.Resource;
-
+import marchcat.pictures.Picture;
 import marchcat.storage.exception.StorageException;
 
 public interface Storage {
@@ -25,14 +24,14 @@ public interface Storage {
 	 * Delete the file.
 	 * @param name
 	 */
-	public void delete(String name) throws StorageException;
+	public void delete(Picture picture) throws StorageException;
 	
 	/**
 	 * Load file as resource.
 	 * @param path
 	 * @return Resource
 	 */
-	public InputStream load(String name) throws StorageException;
+	public InputStream load(Picture picture) throws StorageException;
 	/**
 	 * Get storage ID
 	 * @return

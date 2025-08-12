@@ -47,7 +47,7 @@ public class AccountService {
 		
 		pictureRepository.deletePictureById(picId);
 		try {
-			storage.delete(picFilename);
+			storage.delete(pic);
 		} catch (StorageException e) {
 			// TODO: handle exception
 		}

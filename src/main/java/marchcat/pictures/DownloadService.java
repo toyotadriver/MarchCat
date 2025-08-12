@@ -46,9 +46,9 @@ public class DownloadService {
 
 	}
 
-	public byte[] getInputStreamOfPicture(String fileName, String ext) throws PictureRepositoryException {
+	public byte[] getInputStreamOfPicture(Picture picture) throws PictureRepositoryException {
 		
-		try(InputStream ins = storage.load(fileName + '.' + ext);) {
+		try(InputStream ins = storage.load(picture);) {
 			
 			return ins.readAllBytes();
 
