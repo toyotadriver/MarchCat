@@ -12,13 +12,13 @@ public interface Storage {
 	 */
 	public void init() throws StorageException;
 	/**
-	 * Store the file with the given name and return folder
+	 * Store the file with the given name and return success
 	 * @param is
 	 * @param name
 	 * @return int
 	 * @throws StorageException
 	 */
-	public int store(InputStream is, String name) throws StorageException;
+	public boolean store(Picture picture, InputStream is) throws StorageException;
 	
 	/**
 	 * Delete the file.

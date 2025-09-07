@@ -26,17 +26,11 @@ public class UploadService {
 	private final Storage storage;
 	private final PictureRepository pictureRepository;
 	private final LinkRepository linkRepository;
-	private final StorageRepository storageRepository;
 
-	public UploadService(
-			Storage storage,
-			PictureRepository pictureRepository,
-			LinkRepository linkRepository,
-			StorageRepository storageRepository) {
+	public UploadService(Storage storage, PictureRepository pictureRepository, LinkRepository linkRepository) {
 		this.storage = storage;
 		this.pictureRepository = pictureRepository;
 		this.linkRepository = linkRepository;
-		this.storageRepository = storage.getStorageRepository();
 	}
 
 	@Transactional
@@ -69,35 +63,29 @@ public class UploadService {
 				System.out.println(e.getMessage());
 				// TO BE LOGGED
 			}
-			
-			//IDKs
-			int currentFolder;
 			if (valid) {
+
+				int storageId = storage.getStorageId();
+				Picture pic = pictureRepository.insertPicture(filename, rndName, splittedName[1], storageId);
+
 				try {
-					currentFolder = storage.store(is, rndName + '.' + splittedName[1]);
+					storage.store(pic, is);
 					System.out.println("File stored!");
 				} catch (StorageException e) {
-					// TODO: handle exception
 					System.out.println("File cannot be stored");
 					System.out.println(e.getMessage());
 					return false;
 				}
+
+				linkRepository.insertLink(pic.getId(), RandomGen.randomString(20));
+
+				pictureRepository.insertPictureIntoAccount(pic.getId(), userId);
 
 			} else {
 				System.out.println("Pic isn't valid");
 				return false;
 			}
 
-			
-			int storageId = storage.getStorageId();
-			int id = pictureRepository.insertPicture(filename, rndName, splittedName[1], storageId);
-			String storageName = storageRepository.getStorageName(storageId);
-			storageRepository.insertFile(id, currentFolder);
-			linkRepository.insertLink(id, RandomGen.randomString(20));
-			
-			pictureRepository.insertPictureIntoAccount(id, userId);
-
-			
 			return true;
 
 		} else {

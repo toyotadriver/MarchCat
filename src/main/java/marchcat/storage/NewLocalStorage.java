@@ -7,12 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import marchcat.pictures.Picture;
 import marchcat.storage.exception.StorageException;
@@ -80,9 +80,9 @@ public class NewLocalStorage implements Storage {
 		return Paths.get(pathString);
 	}
 
+	@Transactional
 	@Override
-	public int store(InputStream is, String name) throws StorageException {
-		System.out.println("NASRALNASRALNASRALNASRALNASRAL");
+	public boolean store(Picture picture, InputStream is) throws StorageException {
 
 		int size = storageFoldersList.size();
 		System.out.println("Storage Folder List size: " + size);
@@ -112,12 +112,14 @@ public class NewLocalStorage implements Storage {
 
 				i++;
 			}
-
-			Path fileDes = Paths.get(chosen.toString(), "/", name);
+			
+			storageRepository.insertFile(picture.getId(), c);
+			
+			Path fileDes = Paths.get(chosen.toString(), "/", picture.getRnd_name() + "\\." + picture.getExt());
 			System.out.println("Copying: " + fileDes.toString());
 			Files.copy(is, fileDes);
 
-			return c;
+			return true;
 
 		} catch (IOException e) {
 			throw new StorageException("Failed to store the file: " + chosen.toString(), e);
@@ -142,13 +144,20 @@ public class NewLocalStorage implements Storage {
 
 	@Override
 	public InputStream load(Picture picture) throws StorageException {
-		// TODO Auto-generated method stub
-		return null;
+
+		String folder = storageRepository.getFolder(picture.getId());
+		
+		try(InputStream ins = Files.newInputStream(Paths.get(STORAGE_DIRECTORY, File.separator, folder))) {
+			return ins;
+		} catch (IOException e) {
+			throw new StorageException("Failed to load IS of the file", e);
+		}
+		
 	}
 
 	@Override
 	public int getStorageId() {
-		// TODO Auto-generated method stub
+
 		return 0;
 	}
 

@@ -16,7 +16,7 @@ import marchcat.util.HashGen;
 
 
 @SpringBootTest
-public class LoginTest {
+public class LoginProcessorTest {
 	
 	UserRepository userRepository = mock(UserRepository.class);
 	

@@ -9,8 +9,8 @@ import org.springframework.data.repository.CrudRepository;
 public interface PictureRepository extends CrudRepository<Picture, Integer> {
 	
 	//@Modifiyng was deleted because of RETURNING id
-	@Query("INSERT INTO pictures(name, rnd_name, ext, storage) VALUES(:name, :rnd_name, :ext, :storage) RETURNING id")
-	int insertPicture(String name, String rnd_name, String ext, int storage);
+	@Query("INSERT INTO pictures(name, rnd_name, ext, storage) VALUES(:name, :rnd_name, :ext, :storage) RETURNING *")
+	Picture insertPicture(String name, String rnd_name, String ext, int storage);
 	
 	//IDK
 //	@Modifying
