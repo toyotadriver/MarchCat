@@ -46,14 +46,25 @@ public class DownloadService {
 
 	}
 
-	public byte[] getInputStreamOfPicture(Picture picture) throws PictureRepositoryException {
+	public byte[] getBytesOfPicture(Picture picture) throws PictureRepositoryException {
+		
+		try {
+			boolean isIsZero = storage.load(picture) == null;
+			System.out.println("Is IS null : " + isIsZero);
+		} catch (StorageException e) {
+			// TODO: handle exception
+		}
+		
 		
 		try(InputStream ins = storage.load(picture);) {
 			
-			return ins.readAllBytes();
+			byte[] bytes = ins.readAllBytes();
+			//IMPORTANT
+			ins.close();
+			return bytes;
 
 		} catch (StorageException | IOException e) {
-			throw new PictureRepositoryException("Pic repo exception" + e.getMessage(), e.getCause());
+			throw new PictureRepositoryException("Failed to get InputStream: " + e.getClass() + " " + e.getMessage(), e.getCause());
 		}
 
 	}

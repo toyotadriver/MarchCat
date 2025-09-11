@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -23,7 +24,8 @@ public class NewLocalStorage implements Storage {
 	final LocalStorageRepository storageRepository;
 
 	String disk = "C:\\";
-	public String STORAGE_DIRECTORY = disk + "MARCHCAT STORAGE";
+	public String storageFolderName = "MARCHCAT STORAGE";
+	public String STORAGE_DIRECTORY = disk + storageFolderName;
 	public Path STORAGE_DIRECTORY_PATH = Paths.get(STORAGE_DIRECTORY);
 	public List<Path> storageFoldersList;
 
@@ -52,8 +54,16 @@ public class NewLocalStorage implements Storage {
 
 		}
 		try {
-			Stream<Path> folderPaths = Files.list(STORAGE_DIRECTORY_PATH);
+			//To sort in normal order, not 1, 10, 11, 12, 2, 3, 4, 5, ...
+			Comparator<Path> pathComparator = (a, b) -> {
+				int first = Integer.parseInt(a.getFileName().toString());
+				int second = Integer.parseInt(b.getFileName().toString());
+				return (first - second);
+			};
+			
+			Stream<Path> folderPaths = Files.list(STORAGE_DIRECTORY_PATH).sorted(pathComparator);
 			Iterator<Path> fPIter = folderPaths.iterator();
+			
 
 			storageFoldersList = new ArrayList<>();
 			while (fPIter.hasNext()) {
@@ -112,10 +122,10 @@ public class NewLocalStorage implements Storage {
 
 				i++;
 			}
-			
+
 			storageRepository.insertFile(picture.getId(), c);
-			
-			Path fileDes = Paths.get(chosen.toString(), "/", picture.getRnd_name() + "\\." + picture.getExt());
+
+			Path fileDes = Paths.get(chosen.toString(), "/", picture.getRnd_name() + '.' + picture.getExt());
 			System.out.println("Copying: " + fileDes.toString());
 			Files.copy(is, fileDes);
 
@@ -132,7 +142,7 @@ public class NewLocalStorage implements Storage {
 			init();
 		}
 		String folder = storageRepository.getFolder(picture.getId());
-		String[] pathString = { STORAGE_DIRECTORY, folder, picture.getRnd_name() + picture.getExt() };
+		String[] pathString = { STORAGE_DIRECTORY, folder, picture.getRnd_name() + '.' + picture.getExt() };
 
 		Path filePath = makePathFromStringArray(pathString);
 		try {
@@ -145,14 +155,26 @@ public class NewLocalStorage implements Storage {
 	@Override
 	public InputStream load(Picture picture) throws StorageException {
 
-		String folder = storageRepository.getFolder(picture.getId());
-		
-		try(InputStream ins = Files.newInputStream(Paths.get(STORAGE_DIRECTORY, File.separator, folder))) {
-			return ins;
-		} catch (IOException e) {
-			throw new StorageException("Failed to load IS of the file", e);
+		String folder = getPictureFolder(picture);
+		String filefullName = picture.getRnd_name() + '.' + picture.getExt();
+
+		Path filePath = Paths.get(STORAGE_DIRECTORY, File.separator, folder, File.separator, filefullName);
+		if (Files.exists(filePath)) {
+			try {
+				InputStream ins = Files
+						.newInputStream(Paths.get(STORAGE_DIRECTORY, File.separator, folder, File.separator, filefullName));
+				return ins;
+			} catch (IOException e) {
+				throw new StorageException("Failed to load IS of the file", e);
+			}
+		} else {
+			throw new StorageException("The file not found");
 		}
-		
+
+	}
+	
+	public String getPictureFolder(Picture picture) {
+		return storageRepository.getFolder(picture.getId());
 	}
 
 	@Override

@@ -1,7 +1,4 @@
-package marchcat.controllers;
-
-import java.io.IOException;
-import java.io.InputStream;
+ package marchcat.controllers;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +45,7 @@ public class DownloadController {
 
 			String type = "image/" + ext;
 
-			byte[] bytes = downloadService.getInputStreamOfPicture(picture);
+			byte[] bytes = downloadService.getBytesOfPicture(picture);
 
 			return ResponseEntity.status(200).contentType(MediaType.parseMediaType(type)).body(bytes);
 

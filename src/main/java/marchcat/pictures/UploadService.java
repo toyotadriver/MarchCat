@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import marchcat.pictures.exception.PictureValidateException;
 import marchcat.pictures.exception.UploadException;
 import marchcat.storage.Storage;
-import marchcat.storage.StorageRepository;
 import marchcat.storage.exception.StorageException;
 import marchcat.util.RandomGen;
 
