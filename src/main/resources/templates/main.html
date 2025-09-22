@@ -12,9 +12,13 @@
     </div>
     <div id="wrapper">
         <div class="m-col-el">
-            <li><a th:href="@{/upload}">Upload</a></li><br>
-            <li><a th:href="@{/register}">Register</a></li><br>
-            <li><a th:href="@{/login}">Login</a></li><br>
+            <li><a th:href="@{/upload}">Upload</a></li>
+            <li><a th:href="@{/register}">Register</a></li>
+            <a th:text="${loggedIn}"></a>
+            <li><div th:switch="${loggedIn}">
+                    <a th:case="false" th:href="@{/login}">Login</a>
+                    <a th:case="true" th:href="@{/logout}">Logout</a>
+            </div></li>
             <li><a th:href="@{/account}">Account</a></li>
         </div>
     </div>
