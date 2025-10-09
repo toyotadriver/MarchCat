@@ -2,9 +2,10 @@
 <html>
 
 <head>
-    <meta charstet="UTF-8">
+    <meta charset="UTF-8">
     <title>Register</title>
-    <link th:href="@{/styles/main.css}" rel="stylesheet">
+    <link th:href="@{/styles/main.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/register.js}"></script>
 </head>
 <body>
     <div id="wrapper">
@@ -12,10 +13,10 @@
             <span class="span-error-text" th:text="${registerMessage}"></span>
         </div>
         <div class="m-col-el">
-            <form id="div-form-login" action="/register" method="post">
+            <form id="div-form-register" action="/register" method="post">
                 Username: <input type="text" name="username"/><br/>
                 Password: <input type="text" name="password"/><br/>
-                <button class="button-submit" type="submit">Register</button>
+                <button class="button-regular" type="submit">Register</button>
             </form>
         </div>
     </div>

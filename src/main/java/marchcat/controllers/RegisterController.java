@@ -39,6 +39,7 @@ public class RegisterController {
 			@RequestHeader String username,
 			@RequestHeader String password,
 			Model model) {
+		System.out.println("user: " + username + " pw: " + password);
 		
 		registerService.setUsername(username);
 		registerService.setPassword(password);

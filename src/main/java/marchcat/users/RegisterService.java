@@ -1,6 +1,7 @@
 package marchcat.users;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
 import marchcat.users.exception.FailedToRegisterException;
@@ -28,6 +29,7 @@ public class RegisterService {
 	 * @return boolean success of the operation.
 	 * @throws FailedToRegisterException
 	 */
+	@Transactional
 	public boolean process() throws FailedToRegisterException {
 		
 		valid = validateLogin();

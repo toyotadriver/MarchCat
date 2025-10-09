@@ -14,6 +14,7 @@ public final class HashGen {
 			
 			passwordHash = md.digest(password.getBytes(StandardCharsets.UTF_8));
 			
+			
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			
@@ -28,7 +29,6 @@ public final class HashGen {
 			}
 			outputString.append(hex);
 		}
-		
 		return outputString.toString();
 		
 		
