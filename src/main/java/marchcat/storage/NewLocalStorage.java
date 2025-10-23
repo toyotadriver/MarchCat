@@ -25,14 +25,25 @@ public class NewLocalStorage implements Storage {
 
 	String disk = "C:\\";
 	public String storageFolderName = "MARCHCAT STORAGE";
-	public String STORAGE_DIRECTORY = disk + storageFolderName;
-	public Path STORAGE_DIRECTORY_PATH = Paths.get(STORAGE_DIRECTORY);
+	public String STORAGE_DIRECTORY;
+	public Path STORAGE_DIRECTORY_PATH;
 	public List<Path> storageFoldersList;
 
 	public int MAX_FILES = 30;
 
 	public NewLocalStorage(LocalStorageRepository localStorageRepository) throws StorageException {
 		this.storageRepository = localStorageRepository;
+		String osName = System.getProperty("os.name");
+		System.out.println(osName);
+		if(osName.equals("Linux")) {
+			
+			//HAVE TO MOUNT VOLUME
+			this.disk = "/var/lib/MarchCat/";
+		}
+		
+		STORAGE_DIRECTORY = disk + storageFolderName;
+		STORAGE_DIRECTORY_PATH = Paths.get(STORAGE_DIRECTORY);
+		
 		try {
 			init();
 		} catch (StorageException e) {

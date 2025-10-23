@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>marchcat</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>marchcat</name>
-	<description>Demo project for Spring Boot</description>
+	<description>MarchCat - image hosting</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -97,19 +97,8 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				
 			</plugin>
-			
-<!--			<plugin>-->
-<!--              <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>repackage</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
 			
 			<plugin>
     		<groupId>org.apache.maven.plugins</groupId>
@@ -121,6 +110,7 @@
         	</argLine>
     		</configuration>
 			</plugin>
+			
 		</plugins>
 		
 		
