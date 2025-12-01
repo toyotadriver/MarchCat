@@ -15,13 +15,21 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class LoggingAspect {
-	private Logger logger;
+	private static Logger logger;
+	
+	static {
+		logger = Logger.getLogger(LoggingAspect.class.getName());
+	}
 	
 	public LoggingAspect() {
-		this.logger = Logger.getLogger(LoggingAspect.class.getName());
+		
 		ConsoleHandler consoleHandler = new ConsoleHandler();
 		logger.setLevel(Level.ALL);
 		logger.addHandler(consoleHandler);
+	}
+	
+	public static void log(String msg) {
+		logger.info(msg);
 	}
 	
 	@Before(value = "mcControllers()")

@@ -43,7 +43,7 @@ public class AccountService {
 	public void deletePicture(int picId) {
 		
 		Picture pic = pictureRepository.findPictureById(picId);
-		String picFilename = pic.getRnd_name() + "." + pic.getExt();
+		String picFilename = pic.getHashName() + "." + pic.getExt();
 		
 		pictureRepository.deletePictureById(picId);
 		try {

@@ -34,7 +34,7 @@ public class NewLocalStorage implements Storage {
 	public NewLocalStorage(LocalStorageRepository localStorageRepository) throws StorageException {
 		this.storageRepository = localStorageRepository;
 		String osName = System.getProperty("os.name");
-		System.out.println(osName);
+		System.out.println(osName + "LMAO");
 		if(osName.equals("Linux")) {
 			
 			//HAVE TO MOUNT VOLUME
@@ -136,7 +136,7 @@ public class NewLocalStorage implements Storage {
 
 			storageRepository.insertFile(picture.getId(), c);
 
-			Path fileDes = Paths.get(chosen.toString(), "/", picture.getRnd_name() + '.' + picture.getExt());
+			Path fileDes = Paths.get(chosen.toString(), "/", picture.getHashName() + '.' + picture.getExt());
 			System.out.println("Copying: " + fileDes.toString());
 			Files.copy(is, fileDes);
 
@@ -153,7 +153,7 @@ public class NewLocalStorage implements Storage {
 			init();
 		}
 		String folder = storageRepository.getFolder(picture.getId());
-		String[] pathString = { STORAGE_DIRECTORY, folder, picture.getRnd_name() + '.' + picture.getExt() };
+		String[] pathString = { STORAGE_DIRECTORY, folder, picture.getHashName() + '.' + picture.getExt() };
 
 		Path filePath = makePathFromStringArray(pathString);
 		try {
@@ -167,7 +167,7 @@ public class NewLocalStorage implements Storage {
 	public InputStream load(Picture picture) throws StorageException {
 
 		String folder = getPictureFolder(picture);
-		String filefullName = picture.getRnd_name() + '.' + picture.getExt();
+		String filefullName = picture.getHashName() + '.' + picture.getExt();
 
 		Path filePath = Paths.get(STORAGE_DIRECTORY, File.separator, folder, File.separator, filefullName);
 		if (Files.exists(filePath)) {

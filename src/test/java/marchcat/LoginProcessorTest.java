@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import javax.security.auth.login.FailedLoginException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import marchcat.users.LoginProcessor;
 import marchcat.users.User;
 import marchcat.users.UserRepository;
+import marchcat.users.exception.LoginFailedException;
 import marchcat.util.HashGen;
 
 
@@ -37,8 +40,14 @@ public class LoginProcessorTest {
 		user.setRole(0);
 		
 		when(userRepository.findUserByNameAndPassword(username, hashedPassword)).thenReturn(user);
+		boolean l = false;
+		try {
+			l = loginProcessor.login(username, password) != null;
+		} catch (LoginFailedException e) {
+			// TODO: handle exception
+		}
 		
-		assertTrue(loginProcessor.login(username, password));
+		assertTrue(l);
 	}
 	
 	

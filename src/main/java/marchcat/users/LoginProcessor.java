@@ -3,6 +3,7 @@ package marchcat.users;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
+import marchcat.users.exception.LoginFailedException;
 import marchcat.util.HashGen;
 
 @Component
@@ -10,33 +11,31 @@ import marchcat.util.HashGen;
 public class LoginProcessor {
 
 	private UserRepository userRepository;
-	private User user;
 	
 	public LoginProcessor(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 	
-	public boolean login(String username, String password) {
+	public User login(String username, String password) throws LoginFailedException {
 		
 		String hashedPW = HashGen.generatePassHash(password);
 		
 		User user = userRepository.findUserByNameAndPassword(username, hashedPW);
 		
 		if(user != null) {
-			this.user = user;
-			return true;
+			return user;
 		} else {
-			return false;
+			throw new LoginFailedException("Failed to login");
 		}
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
+//	public User getUser() {
+//		return user;
+//	}
+//
+//	public void setUser(User user) {
+//		this.user = user;
+//	}
 	
 	
 }

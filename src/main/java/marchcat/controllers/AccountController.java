@@ -57,6 +57,7 @@ public class AccountController {
 			if(accountService.getPictureFromAccount(logged.getId(), picId)) {
 				accountService.deletePicture(picId);
 			}
-		return ResponseEntity.status(200).body("");
+		//204 is for "resource deleted successfully"
+		return ResponseEntity.status(204).body("");
 	}
 }

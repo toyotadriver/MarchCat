@@ -1,33 +1,50 @@
 package marchcat.controllers;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import marchcat.users.Logged;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import marchcat.security.JwtTokenProvider;
 import marchcat.users.LoginProcessor;
+import marchcat.users.User;
+import marchcat.users.exception.LoginFailedException;
 
 @Controller
 public class LoginController {
 
-	private boolean loggedIn = false;
+	//private boolean loggedIn = false;
 	private LoginProcessor loginProcessor;
-	private Logged logged;
+	JwtTokenProvider jwtTokenProvider;
 
-	public LoginController(LoginProcessor loginProcessor, Logged logged) {
+	public LoginController(LoginProcessor loginProcessor, JwtTokenProvider jtp) {
+		
+		this.jwtTokenProvider = jtp;
 		this.loginProcessor = loginProcessor;
-		this.logged = logged;
 	}
 
 	@GetMapping("/login")
-	public String viewLoginPage() {
-		if (logged.getUsername() == null) {
-			return "login.html";
-		} else {
-			return "redirect:/main";
+	public String viewLoginPage(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		Optional<Cookie> accessTokenCookie = Arrays.stream(cookies)
+				.filter(c -> "access_token".equals(c.getName()))
+				.findAny();
+		if(accessTokenCookie.isPresent()) {
+			String accessToken = accessTokenCookie.get().getValue();
+			
+			if(jwtTokenProvider.validateAccessToken(accessToken)) {
+				return "redirect:/main";
+			}
 		}
+		
+		return "login.html";
 	}
 
 	/**
@@ -38,39 +55,40 @@ public class LoginController {
 	 * @param password
 	 * @return
 	 */
-	/*
-	 * @PostMapping("/login") public String enterLogin(Model model,
-	 * 
-	 * @RequestHeader String username,
-	 * 
-	 * @RequestHeader String password) {
-	 * 
-	 * loggedIn = loginProcessor.login(username, password);
-	 * 
-	 * if(!loggedIn) { model.addAttribute("message",
-	 * "Login or password is incorrect"); return "login.html"; } else {
-	 * 
-	 * logged.setUsername(username);
-	 * 
-	 * return "redirect:/main"; } }
-	 */
 
 	@PostMapping("/login")
-	public ResponseEntity<String> postLogin(@RequestHeader String username, @RequestHeader String password) {
+	public ResponseEntity<String> postLogin(@RequestHeader String username,
+			@RequestHeader String password,
+			HttpServletRequest request,
+			HttpServletResponse response) {
 
-		loggedIn = loginProcessor.login(username, password);
-		if (!loggedIn) {
-			String message = "Incorrect login or password";
-
-			return ResponseEntity
-					.status(400)
-					.body(message);
-		} else {
-			logged.setId(loginProcessor.getUser().getId());
-			logged.setUsername(loginProcessor.getUser().getUsername());
+		User user;
+		try {
+			user = loginProcessor.login(username, password);
+			String accessToken = jwtTokenProvider.generateAccessToken(user);
+			String refreshToken = jwtTokenProvider.generateRefreshToken(user);
+			
+			response.addHeader("Set-Cookie", "access_token=" + accessToken +
+                    "; Max-Age=" + (JwtTokenProvider.accessExpTime / 1000) + ";" +
+                    "Path=/;" +
+                    "HttpOnly=true;" +
+//                    "Secure=true;" +
+                    "SameSite=Strict;");
+			response.addHeader("Set-Cookie", "refresh_token=" + refreshToken +
+                    "; Max-Age=" + (JwtTokenProvider.refreshExpTime / 1000) + ";" +
+                    "Path=/;" +
+                    "HttpOnly=true;" +
+//                    "Secure=true;" +
+                    "SameSite=Strict;");
+			
 			return ResponseEntity
 					.status(200)
 					.body(null);
+			
+		} catch (LoginFailedException e) {
+			return ResponseEntity
+					.status(400)
+					.body("Username or password is invalid");
 		}
 
 	}

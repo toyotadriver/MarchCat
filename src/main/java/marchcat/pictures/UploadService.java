@@ -12,6 +12,7 @@ import marchcat.pictures.exception.PictureValidateException;
 import marchcat.pictures.exception.UploadException;
 import marchcat.storage.Storage;
 import marchcat.storage.exception.StorageException;
+import marchcat.util.HashGen;
 import marchcat.util.RandomGen;
 
 @Service
@@ -52,8 +53,9 @@ public class UploadService {
 			Long fileSize = file.getSize();
 			String[] splittedName = splitName(filename);
 
-			String rndName = RandomGen.randomString(20);
-			System.out.println("Random filename: " + rndName + '.' + splittedName[1]);
+			//Hashing now
+			String hashName = HashGen.generateISHash(is);
+			System.out.println("Random filename: " + hashName + '.' + splittedName[1]);
 
 			Boolean valid = false;
 			try {
@@ -65,7 +67,7 @@ public class UploadService {
 			if (valid) {
 
 				int storageId = storage.getStorageId();
-				Picture pic = pictureRepository.insertPicture(filename, rndName, splittedName[1], storageId);
+				Picture pic = pictureRepository.insertPicture(filename, hashName, splittedName[1], storageId);
 
 				try {
 					storage.store(pic, is);

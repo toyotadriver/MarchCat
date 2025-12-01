@@ -16,8 +16,8 @@ public class Picture {
 	private String name;
 	@Column("ext")
 	private String ext;
-	@Column("rnd_name")
-	private String rnd_name;	
+	@Column("hashName")
+	private String hashName;	
 	@Column("dou")
 	private Timestamp timestamp;
 	@Column("storage")
@@ -49,12 +49,12 @@ public class Picture {
 		this.ext = ext;
 	}
 
-	public String getRnd_name() {
-		return rnd_name;
+	public String getHashName() {
+		return hashName;
 	}
 
-	public void setRnd_name(String rnd_name) {
-		this.rnd_name = rnd_name;
+	public void setHashName(String hashName) {
+		this.hashName = hashName;
 	}
 
 	public int getStorage() {
