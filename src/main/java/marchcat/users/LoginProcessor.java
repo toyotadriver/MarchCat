@@ -18,7 +18,7 @@ public class LoginProcessor {
 	
 	public User login(String username, String password) throws LoginFailedException {
 		
-		String hashedPW = HashGen.generatePassHash(password);
+		String hashedPW = HashGen.generateStringHash(password);
 		
 		User user = userRepository.findUserByNameAndPassword(username, hashedPW);
 		

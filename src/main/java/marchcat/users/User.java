@@ -1,10 +1,12 @@
 package marchcat.users;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * Entity of User for repository
  */
+@Table("TESTusers")
 public class User {
 
 	@Id

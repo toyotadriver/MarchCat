@@ -1,6 +1,6 @@
 package marchcat.users.exception;
 
-public class FailedToRegisterException extends Exception {
+public class FailedToRegisterException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	

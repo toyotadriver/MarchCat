@@ -5,28 +5,35 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import marchcat.users.Logged;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import marchcat.security.TokenManager;
+import marchcat.users.LoginProcessor;
 import marchcat.users.RegisterService;
+import marchcat.users.User;
 import marchcat.users.exception.FailedToRegisterException;
+import marchcat.users.exception.LoginFailedException;
 
 @Controller
 public class RegisterController {
 	
   private final RegisterService registerService;
-  private Logged logged;
+  private final TokenManager tokenManager;
+  private final LoginProcessor loginProcessor;
 	
 	public RegisterController(
 			RegisterService registerService,
-			Logged logged) {
+			TokenManager tokenManager,
+			LoginProcessor loginProcessor) {
 		this.registerService = registerService;
-		this.logged = logged;
+		this.tokenManager = tokenManager;
+		this.loginProcessor = loginProcessor;
 	}
 
 	@GetMapping("/register")
-	public String registerGet() {
-		if(logged.getUsername() == null) {
+	public String registerGet(HttpServletRequest request, HttpServletResponse response) {
+		if(!tokenManager.validateAccess(request, response)) {
 			return "register.html";
 		} else {
 			return "redirect.html";
@@ -36,30 +43,32 @@ public class RegisterController {
 	
 	@PostMapping("/register")
 	public String registerPost(
+			HttpServletRequest request,
+			HttpServletResponse response,
 			@RequestHeader String username,
 			@RequestHeader String password,
 			Model model) {
 		System.out.println("user: " + username + " pw: " + password);
 		
-		registerService.setUsername(username);
-		registerService.setPassword(password);
-		boolean success;
+		String message;
+		String page;
+		User user;
 		
 		try {
-			success = registerService.process();
-		} catch (FailedToRegisterException e) {
-			success = false;
-			e.printStackTrace();
+			message = registerService.process(username, password);
+			user = loginProcessor.login(username, password);
+			
+			tokenManager.putRefreshTokenToResponse(request, response, user);
+			tokenManager.putAccessTokenToResponse(response, user);
+			
+			page = "redirect.html";
+		} catch (FailedToRegisterException | LoginFailedException e) {
+			message = "Failed to register the user";
+			page = "register.html";
 		}
 		
-
-		if(success){
-			logged.setUsername(username);
-			return "redirect.html";
-		} else {
-			model.addAttribute("message", registerService.message);
-			return "register.html";
-		}
+		model.addAttribute("registerMessage", message);
+		return page;
 		
 	}
 }

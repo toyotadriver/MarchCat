@@ -7,14 +7,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public final class HashGen {
-	public static String generatePassHash(String password) {
+	public static String generateStringHash(String string) {
 		MessageDigest md;
 		
 		byte[] passwordHash;
 		try{
 			md = MessageDigest.getInstance("SHA-256");
 			
-			passwordHash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+			passwordHash = md.digest(string.getBytes(StandardCharsets.UTF_8));
 			
 			
 		} catch (NoSuchAlgorithmException e) {

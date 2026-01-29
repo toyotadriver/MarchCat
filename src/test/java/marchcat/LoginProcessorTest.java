@@ -32,7 +32,7 @@ public class LoginProcessorTest {
 		
 		String username = "tralalelo";
 		String password = "tralala";
-		String hashedPassword = HashGen.generatePassHash(password);
+		String hashedPassword = HashGen.generateStringHash(password);
 		
 		User user = new User();
 		user.setUsername(username);

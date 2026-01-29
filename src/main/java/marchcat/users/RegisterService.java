@@ -11,13 +11,7 @@ import marchcat.util.HashGen;
 @RequestScope
 public class RegisterService {
 	
-	private String username;
-	private String password;
-	
 	private final UserRepository userRepository;
-
-	private boolean valid = false;
-	public String message = "OK";
 	
 	public RegisterService(
 			UserRepository userRepository){
@@ -25,63 +19,42 @@ public class RegisterService {
 	}
 	
 	/**
-	 * Register the user.
+	 * Register the user. Return message String or throw {@link FailedToRegisterException} if failed.
 	 * @return boolean success of the operation.
 	 * @throws FailedToRegisterException
 	 */
 	@Transactional
-	public boolean process() throws FailedToRegisterException {
+	public String process(String username, String password) throws FailedToRegisterException {
 		
-		valid = validateLogin();
+		RegisterMessage msg = validateLogin(username, password);
 		
-		if (valid) {
-			String hashedPW = HashGen.generatePassHash(password);
+		if (msg == RegisterMessage.OK) {
+			String hashedPW = HashGen.generateStringHash(password);
 			
 			boolean success = userRepository.insertUser(username, hashedPW);
 			
-			if(success) {
-				return true;
-			} else {
+			if(!success) {
 				throw new FailedToRegisterException("Failed to register user.");
 			}
 		}
-		return false;
+		return msg.getMessage();
 	}
 
 	/**
 	 * Validate login
 	 * @return success
 	 */
-	private boolean validateLogin() {
+	private RegisterMessage validateLogin(String username, String password) {
 		int unl = username.length();
 		int pwl = password.length();
 		if(unl < 4 || unl > 20) {
-			message = "Username must be between 4 and 20 chars long!";
-			return false;
+			return RegisterMessage.USERNAME_WRONG_LENGTH;
 		} else if(pwl < 4 || pwl > 30) {
-			message = "Password must be between 4 and 30 chars long!";
-			return false;
+			return RegisterMessage.PASSWORD_WRONG_LENGTH;
 		} else {
-			return true;
+			return RegisterMessage.OK;
 		}
 		
-	}
-	
-	
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	
 	
