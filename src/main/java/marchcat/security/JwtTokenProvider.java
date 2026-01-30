@@ -6,9 +6,7 @@ import java.util.concurrent.TimeUnit;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -135,4 +133,9 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
     }
+	
+	public void deleteTokenFromRedis(HttpServletRequest request, String subjectName) {
+		String userAgent = request.getHeader("User-Agent");
+		redisTemplate.opsForHash().delete(subjectName, userAgent);
+	}
 }

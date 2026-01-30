@@ -14,6 +14,9 @@ import marchcat.users.UserRepository;
 
 @Component
 public class TokenManager {
+	
+	static String aTokenName = "access_token";
+	static String rTokenName = "refresh_token";
 
 	private JwtTokenProvider jwtTokenProvider;
 	private UserRepository userRepository;
@@ -26,7 +29,7 @@ public class TokenManager {
 
 	public boolean validateAccess(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
-		Optional<Cookie> accessTokenCookie = Arrays.stream(cookies).filter(c -> "access_token".equals(c.getName()))
+		Optional<Cookie> accessTokenCookie = Arrays.stream(cookies).filter(c -> aTokenName.equals(c.getName()))
 				.findAny();
 		if (accessTokenCookie.isPresent()) {
 			String accessToken = accessTokenCookie.get().getValue();
@@ -35,7 +38,7 @@ public class TokenManager {
 			} else {
 				
 				if(validateRefresh(request)) {
-					Optional<Cookie> refreshTokenCookie = Arrays.stream(cookies).filter(c -> "refresh_token".equals(c.getName()))
+					Optional<Cookie> refreshTokenCookie = Arrays.stream(cookies).filter(c -> rTokenName.equals(c.getName()))
 							.findAny();
 					Claims claims = jwtTokenProvider.getRefreshClaims(refreshTokenCookie.get().getValue());
 					
@@ -55,7 +58,7 @@ public class TokenManager {
 
 	private boolean validateRefresh(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
-		Optional<Cookie> refreshTokenCookie = Arrays.stream(cookies).filter(c -> "refresh_token".equals(c.getName()))
+		Optional<Cookie> refreshTokenCookie = Arrays.stream(cookies).filter(c -> rTokenName.equals(c.getName()))
 				.findAny();
 		if (refreshTokenCookie.isPresent()) {
 			String refreshToken = refreshTokenCookie.get().getValue();
@@ -67,19 +70,29 @@ public class TokenManager {
 		return false;
 	}
 	
-	
-	
 
 	public void putAccessTokenToResponse(HttpServletResponse response, User user) {
 		String accessToken = jwtTokenProvider.generateAccessToken(user);
 
-		putTokenToResponse(response, "access_token", accessToken, JwtTokenProvider.accessExpTime / 1000);//in SECONDS
+		putTokenToResponse(response, aTokenName, accessToken, JwtTokenProvider.accessExpTime / 1000);//in SECONDS
 	}
 	
 	public void putRefreshTokenToResponse(HttpServletRequest request, HttpServletResponse response, User user) {
 		String refreshToken = jwtTokenProvider.generateRefreshToken(user, request);
 		
-		putTokenToResponse(response, "refresh_token", refreshToken, JwtTokenProvider.refreshExpTime / 1000);//in SECONDS
+		putTokenToResponse(response, rTokenName, refreshToken, JwtTokenProvider.refreshExpTime / 1000);//in SECONDS
+	}
+	
+	public void putExpiredTokens(HttpServletRequest request, HttpServletResponse response) {
+		Cookie[] cookies = request.getCookies();
+		Optional<Cookie> refreshTokenCookie = Arrays.stream(cookies).filter(c -> rTokenName.equals(c.getName()))
+				.findAny();
+		Claims claims = jwtTokenProvider.getRefreshClaims(refreshTokenCookie.get().getValue());
+		String subject = claims.getSubject();
+		
+		putTokenToResponse(response, aTokenName, "", 0);
+		putTokenToResponse(response, rTokenName, "", 0);
+		jwtTokenProvider.deleteTokenFromRedis(request, subject);
 	}
 
 	private void putTokenToResponse(HttpServletResponse response, String tokenName, String token, long expirationTime) {

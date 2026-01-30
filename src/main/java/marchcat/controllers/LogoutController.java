@@ -3,23 +3,24 @@ package marchcat.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import marchcat.users.Logged;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import marchcat.security.TokenManager;
 
 @Controller
 public class LogoutController {
 
-	private Logged logged;
+	private TokenManager tokenManager;
 	
-	public LogoutController(Logged logged) {
-		this.logged = logged;
+	public LogoutController(TokenManager tokenManager) {
+		this.tokenManager = tokenManager;
 	}
 	
 	@GetMapping("/logout")
-	public String logout() {
-		//TODO DELETE ACCESS_TOKEN and REFRESH_TOKEN!
-		if(logged.getUsername() != null) {
-			logged.setUsername(null);
-			logged.setId(-1);
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
+		//FIXME хз, посмотрим
+		if(tokenManager.validateAccess(request, response)) {
+			tokenManager.putExpiredTokens(request, response);
 		}
 		return "redirect:/main";
 	}
