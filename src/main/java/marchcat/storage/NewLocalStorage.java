@@ -104,6 +104,8 @@ public class NewLocalStorage implements Storage {
 	@Transactional
 	@Override
 	public boolean store(Picture picture, InputStream is) throws StorageException {
+		
+	//TODO на этом месте должно быть ожидание сообщения от MCStorage, а затем запись в базу
 
 		int size = storageFoldersList.size();
 		System.out.println("Storage Folder List size: " + size);

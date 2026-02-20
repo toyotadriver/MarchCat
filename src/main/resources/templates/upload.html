@@ -14,10 +14,12 @@
         </div>
         <div class="m-col-el">
             <form id="div-form-login" action="/upload" method="post" enctype="multipart/form-data">
-                File: <input type="file" name="file" /><br />
-                <button class="button-regular" type="submit">Upload</button>
+                File: <input type="file" name="file" id="fileInput" /><br />
+                <button class="button-regular" type="submit" id="uploadBtn">Upload</button>
             </form>
         </div>
+        <div id="status"></div>
+        <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
         <div class="m-col-el">
             <li><a th:href="@{/login}">Login</a></li>
         </div>

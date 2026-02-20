@@ -33,7 +33,7 @@ public class RegisterController {
 
 	@GetMapping("/register")
 	public String registerGet(HttpServletRequest request, HttpServletResponse response) {
-		if(!tokenManager.validateAccess(request, response)) {
+		if(tokenManager.validateAccess(request, response).isEmpty()) {
 			return "register.html";
 		} else {
 			return "redirect.html";

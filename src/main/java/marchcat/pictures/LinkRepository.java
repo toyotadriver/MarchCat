@@ -1,5 +1,7 @@
 package marchcat.pictures;
 
+import java.util.Optional;
+
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -7,8 +9,11 @@ import org.springframework.data.repository.CrudRepository;
 public interface LinkRepository extends CrudRepository<Link, Integer> {
 
 	@Modifying
-	@Query("INSERT INTO links(id, link) VALUES(:id, :link)")
-	void insertLink(int id, String link);
+	@Query("INSERT INTO links(id, link)"
+			+ " VALUES(:id, :link)"
+			+ " ON CONFLICT (link) DO NOTHING"
+			+ " RETURNING *")
+	Optional<Link> insertLink(int id, String link);
 	
 	/**
 	 * Get Link object by link String

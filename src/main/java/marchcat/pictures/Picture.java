@@ -1,5 +1,6 @@
 package marchcat.pictures;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import org.springframework.data.annotation.Id;
@@ -7,7 +8,12 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table(value = "pictures")
-public class Picture {
+public class Picture implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5485348076803003792L;
 
 	@Id
 	private int id;
@@ -71,6 +77,9 @@ public class Picture {
 
 	public String getLink() {
 		return link;
+	}
+	public void setLink(String link) {
+		this.link = link;
 	}
 	
 	

@@ -2,7 +2,12 @@ package marchcat.pictures;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
@@ -12,6 +17,7 @@ import marchcat.pictures.exception.PictureValidateException;
 import marchcat.pictures.exception.UploadException;
 import marchcat.storage.Storage;
 import marchcat.storage.exception.StorageException;
+import marchcat.users.User;
 import marchcat.util.HashGen;
 import marchcat.util.RandomGen;
 
@@ -26,15 +32,41 @@ public class UploadService {
 	private final Storage storage;
 	private final PictureRepository pictureRepository;
 	private final LinkRepository linkRepository;
+	private final RedisTemplate<String, String> redisTemplate;
 
-	public UploadService(Storage storage, PictureRepository pictureRepository, LinkRepository linkRepository) {
+	public UploadService(Storage storage, PictureRepository pictureRepository, LinkRepository linkRepository, RedisTemplate<String, String> redisTemplate) {
 		this.storage = storage;
 		this.pictureRepository = pictureRepository;
 		this.linkRepository = linkRepository;
+		this.redisTemplate = redisTemplate;
+	}
+	
+	public UploadInitResponse processUploadInitResponse(String userName) {
+		String randomTempToken = RandomGen.randomString(32);
+		String tokenHash = HashGen.generateStringHash(randomTempToken);
+		String uploadId = UUID.randomUUID().toString();
+		
+		//uploadId is for Key, tokenHash is value
+		redisTemplate.opsForHash().put(uploadId, "hash", tokenHash);
+		
+		redisTemplate.expire(uploadId, 30, TimeUnit.SECONDS);
+		
+		UploadInitResponse uploadInitResponse = new UploadInitResponse(uploadId, randomTempToken);
+		
+		return uploadInitResponse;
 	}
 
+	/**
+	 * Put file to DB and return the Token
+	 * @param file
+	 * @param user
+	 * @return String - storage token
+	 * @throws UploadException
+	 */
 	@Transactional
-	public boolean process(MultipartFile file, int userId) throws UploadException {
+	public String process(MultipartFile file, int userId) throws UploadException {
+		
+		//TODO at first, wait for file to upload
 
 		InputStream is;
 		if (!file.isEmpty()) {
@@ -58,6 +90,8 @@ public class UploadService {
 			System.out.println("Random filename: " + hashName + '.' + splittedName[1]);
 
 			Boolean valid = false;
+			
+			Picture pic;
 			try {
 				valid = validatePicture(splittedName, fileSize);
 			} catch (PictureValidateException e) {
@@ -67,37 +101,51 @@ public class UploadService {
 			if (valid) {
 
 				int storageId = storage.getStorageId();
-				Picture pic = pictureRepository.insertPicture(filename, hashName, splittedName[1], storageId);
+				pic = pictureRepository.insertPicture(filename, hashName, splittedName[1], storageId);
 
 				try {
 					storage.store(pic, is);
 					System.out.println("File stored!");
 				} catch (StorageException e) {
-					System.out.println("File cannot be stored");
-					System.out.println(e.getMessage());
-					return false;
+					throw new UploadException("File cannot be stored");
 				}
+				
 
-				linkRepository.insertLink(pic.getId(), RandomGen.randomString(20));
+				//XXX
+				Link link = cyclicallyInsertLink(pic.getId());
+				
+				pic.setLink(link.getLink());
 
 				pictureRepository.insertPictureIntoAccount(pic.getId(), userId);
 
 			} else {
-				System.out.println("Pic isn't valid");
-				return false;
+				throw new UploadException("Pic isn't valid");
 			}
-
-			return true;
+			
+			String uploadToken = RandomGen.randomString(32);
+			putToRedis(RequestType.UPLOAD + Integer.toString(userId), pic, uploadToken);
+			return uploadToken;
 
 		} else {
 			throw new UploadException("The file is null");
 		}
 	}
+	
+	private Link cyclicallyInsertLink(int id) {
+		while(true) {
+			String randomLink = RandomGen.randomString(20);
+			
+			Optional<Link> link = linkRepository.insertLink(id, randomLink);
+			if(link.isPresent()) {
+				return link.get();
+			}
+		}
+	}
 
-	private boolean writePicture(Picture picture) {
-		// pictureRepository.insertPicture(picture);
-
-		return true;
+	private void putToRedis(String userIdKeyString, Picture picture, String tempToken) {
+		String key = userIdKeyString;
+		redisTemplate.opsForHash().put(key, picture.getLink(), picture.getHashName());
+		redisTemplate.expire(key, 30, TimeUnit.SECONDS);
 	}
 
 	private boolean validatePicture(String[] fullname, Long fileSize) throws PictureValidateException {

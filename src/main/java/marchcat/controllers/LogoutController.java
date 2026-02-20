@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import marchcat.security.TokenException;
 import marchcat.security.TokenManager;
 
 @Controller
@@ -18,10 +19,12 @@ public class LogoutController {
 	
 	@GetMapping("/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
-		//FIXME хз, посмотрим
-		if(tokenManager.validateAccess(request, response)) {
+		try {
+			tokenManager.validateAccess(request, response);
+		} catch (TokenException e) {
 			tokenManager.putExpiredTokens(request, response);
 		}
+		
 		return "redirect:/main";
 	}
 	

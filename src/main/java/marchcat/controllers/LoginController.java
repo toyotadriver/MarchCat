@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import marchcat.security.TokenException;
 import marchcat.security.TokenManager;
 import marchcat.users.LoginProcessor;
 import marchcat.users.User;
@@ -27,11 +28,13 @@ public class LoginController {
 
 	@GetMapping("/login")
 	public String viewLoginPage(HttpServletRequest request, HttpServletResponse response) {
-		if(tokenManager.validateAccess(request, response)) {
+		try {
+			tokenManager.validateAccess(request, response);
 			return "redirect:/main";
+		} catch (TokenException e) {
+			return "login.html";
 		}
 		
-		return "login.html";
 	}
 	
 
