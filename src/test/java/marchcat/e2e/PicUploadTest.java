@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import marchcat.users.Logged;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import marchcat.security.TokenManager;
 import marchcat.util.RandomGen;
 
 @SpringBootTest
@@ -31,7 +34,9 @@ public class PicUploadTest {
 	}
 	
 	static MockMultipartFile testFile;
-	static Logged logged = mock(Logged.class);
+	static TokenManager tokenManager = mock(TokenManager.class);
+	static HttpServletRequest request = mock(HttpServletRequest.class);
+	static HttpServletResponse response = mock(HttpServletResponse.class);
 	
 	@BeforeAll
 	public static void prepare() {
@@ -48,7 +53,9 @@ public class PicUploadTest {
 			return;
 		}
 		
-		when(logged.getUsername()).thenReturn("tralala");
+		//TODO not right, must be mocking 
+		Optional<String> token = Optional.of(null);
+		when(tokenManager.validateAccess(request, response)).thenReturn(token);
 	}
 	
 	@Test

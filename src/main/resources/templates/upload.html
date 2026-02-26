@@ -13,10 +13,10 @@
             <span class="span-error-text" th:text="${message}"></span>
         </div>
         <div class="m-col-el">
-            <form id="div-form-login" action="/upload" method="post" enctype="multipart/form-data">
+            <!-- <form id="div-form-login" enctype="multipart/form-data"> -->
                 File: <input type="file" name="file" id="fileInput" /><br />
                 <button class="button-regular" type="submit" id="uploadBtn">Upload</button>
-            </form>
+            <!-- </form> -->
         </div>
         <div id="status"></div>
         <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
@@ -24,7 +24,68 @@
             <li><a th:href="@{/login}">Login</a></li>
         </div>
     </div>
+<script>
+    document.getElementById("uploadBtn").addEventListener("click", async () => {
 
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Выберите файл");
+        return;
+    }
+
+    document.getElementById("status").innerText = "Инициализация загрузки...";
+
+    // 1️⃣ Получаем uploadUrl и uploadToken
+    const initResponse = await fetch("/upload", {
+        method: "POST"
+    });
+
+    if (!initResponse.ok) {
+        alert("Ошибка инициализации");
+        return;
+    }
+
+    const initData = await initResponse.json();
+
+    document.getElementById("status").innerText = "Загрузка файла...";
+
+    const protocol = window.location.protocol; // http или https
+    const hostname = window.location.hostname; // домен
+    const storagePort = "8081";
+
+    const uploadUrl =
+        protocol + "//" + hostname + ":" + storagePort +
+        "/picture/" + initData.uploadId +
+        "?token=" + initData.uploadToken;
+
+    // 2️⃣ Отправляем файл в MCStorage
+    const xhr = new XMLHttpRequest();
+
+    xhr.open("POST", uploadUrl, true);
+
+    xhr.upload.onprogress = function (event) {
+        if (event.lengthComputable) {
+            const percent = (event.loaded / event.total) * 100;
+            document.getElementById("progressBar").value = percent;
+        }
+    };
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            document.getElementById("status").innerText = "Файл успешно загружен!";
+        } else {
+            document.getElementById("status").innerText = "Ошибка загрузки";
+        }
+    };
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    xhr.send(formData);
+});
+</script>
 </body>
 
 </html>

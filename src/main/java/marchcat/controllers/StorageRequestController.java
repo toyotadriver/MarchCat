@@ -3,11 +3,11 @@ package marchcat.controllers;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class StorageRequestController {
 	public String getUpload(HttpServletRequest request, HttpServletResponse response, Model model) {
 		
 		try {
-			tokenManager.validateAccess(request, response).get();
+			tokenManager.validateAccess(request, response);
 			return "upload.html";
 			
 		} catch (TokenException e) {
@@ -43,9 +43,10 @@ public class StorageRequestController {
 		
 	}
 	
-	@PostMapping("/requestUpload")
+	@ResponseBody //need this because this is not RestController. Return is the response body
+	@PostMapping("/upload")
 	public UploadInitResponse postUpload(
-			//@RequestParam("file") MultipartFile file,
+			//@RequestParam("file") MultipartFile file, it is not needed now
 			HttpServletRequest request,
 			HttpServletResponse response,
 			Model model) {

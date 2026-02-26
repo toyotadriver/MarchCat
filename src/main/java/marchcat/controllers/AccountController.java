@@ -1,7 +1,5 @@
 package marchcat.controllers;
 
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +14,6 @@ import marchcat.pictures.Picture;
 import marchcat.security.TokenException;
 import marchcat.security.TokenManager;
 import marchcat.users.AccountService;
-import marchcat.users.Logged;
 import marchcat.users.UserRepository;
 import marchcat.util.LoggingAspect;
 
@@ -65,8 +62,9 @@ public class AccountController {
 		
 		//TODO this must request to MCStorage now too
 		
+		String token;
 		try {
-			tokenManager.validateAccess(request, response);
+			token = tokenManager.validateAccess(request, response).get();
 		} catch (TokenException e) {
 			LoggingAspect.log("Failed to auth while processing DELETE request");
 			return ResponseEntity.status(405).body("");
@@ -76,7 +74,7 @@ public class AccountController {
 			Picture pic = downloadService.link(picLink);
 			int picId = pic.getId();
 			
-			if(accountService.getPictureFromAccount(logged.getId(), picId)) {
+			if(accountService.getPictureFromAccount(tokenManager.getIdFromToken(token), picId)) {
 				accountService.deletePicture(picId);
 			}
 		//204 is for "resource deleted successfully"

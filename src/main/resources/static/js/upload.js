@@ -11,7 +11,7 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
     document.getElementById("status").innerText = "Инициализация загрузки...";
 
     // 1️⃣ Получаем uploadUrl и uploadToken
-    const initResponse = await fetch("/uploads/init", {
+    const initResponse = await fetch("/upload", {
         method: "POST"
     });
 

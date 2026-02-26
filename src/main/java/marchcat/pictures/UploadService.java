@@ -123,7 +123,7 @@ public class UploadService {
 			}
 			
 			String uploadToken = RandomGen.randomString(32);
-			putToRedis(RequestType.UPLOAD + Integer.toString(userId), pic, uploadToken);
+			putToRedis(RequestType.POST + Integer.toString(userId), pic, uploadToken);
 			return uploadToken;
 
 		} else {

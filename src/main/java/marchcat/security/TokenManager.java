@@ -173,7 +173,7 @@ public class TokenManager {
 		}
 		return username;
 	}
-	public String getIdFromToken(String token) throws TokenException{
+	public int getIdFromToken(String token) throws TokenException{
 		String id;
 		try {
 			id = (String) jwtTokenProvider.getAccessClaims(token).get().get("id");
@@ -181,7 +181,7 @@ public class TokenManager {
 			throw new TokenException("Can't get id from the token: " + token);
 		}
 		
-		return id;
+		return Integer.valueOf(id);
 	}
 	
 	private void deleteTokenFromRedis(HttpServletRequest request, String subjectName) {
