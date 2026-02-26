@@ -1,5 +1,7 @@
 package marchcat.controllers;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import marchcat.security.TokenException;
 import marchcat.security.TokenManager;
 import marchcat.users.LoginProcessor;
 import marchcat.users.RegisterService;
@@ -33,10 +36,11 @@ public class RegisterController {
 
 	@GetMapping("/register")
 	public String registerGet(HttpServletRequest request, HttpServletResponse response) {
-		if(tokenManager.validateAccess(request, response).isEmpty()) {
-			return "register.html";
-		} else {
+		try {
+			tokenManager.validateAccess(request, response);
 			return "redirect.html";
+		} catch (TokenException e) {
+			return "register.html";
 		}
 		
 	}

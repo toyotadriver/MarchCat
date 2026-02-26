@@ -37,6 +37,9 @@ public class TokenManager {
 
 	public Optional<String> validateAccess(HttpServletRequest request, HttpServletResponse response) throws TokenException{
 		Optional<String> accessTokenOptional = getTokenFromRequest(request, aTokenName);
+		if(accessTokenOptional.isEmpty()) {
+			throw new TokenException("Access token is not present");
+		}
 		
 		try {
 			String accessToken = accessTokenOptional.get();

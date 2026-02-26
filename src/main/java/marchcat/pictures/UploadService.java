@@ -19,6 +19,7 @@ import marchcat.storage.Storage;
 import marchcat.storage.exception.StorageException;
 import marchcat.users.User;
 import marchcat.util.HashGen;
+import marchcat.util.LoggingAspect;
 import marchcat.util.RandomGen;
 
 @Service
@@ -44,6 +45,7 @@ public class UploadService {
 	public UploadInitResponse processUploadInitResponse(String userName) {
 		String randomTempToken = RandomGen.randomString(32);
 		String tokenHash = HashGen.generateStringHash(randomTempToken);
+		LoggingAspect.log("GENERATED TOKEN HASH: " + tokenHash);
 		String uploadId = UUID.randomUUID().toString();
 		
 		//uploadId is for Key, tokenHash is value
