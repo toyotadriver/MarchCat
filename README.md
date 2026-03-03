@@ -1,5 +1,5 @@
 Simple image hosting service for Docker.
-This is a main service, storage is in the
+This is the main service, Storage is in the
 
 [MarchCat Storage](https://github.com/toyotadriver/Marchcat-Storage)
 
