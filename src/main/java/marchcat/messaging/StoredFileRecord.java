@@ -1,9 +1,12 @@
-package marchcat.pictures;
+package marchcat.messaging;
 
 import java.sql.Timestamp;
 
-//Same as in the MCStorage
+/**
+ * Record of a stored file. !!! MUST BE MOVED TO A SEPARATE COMMON MODULE
+ */
 public record StoredFileRecord(
+		String uploadId,
 		String originalName,
 		String hashName,
 		String extension,

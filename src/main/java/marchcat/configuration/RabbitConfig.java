@@ -13,27 +13,37 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitConfig {
-	public static final String EXCHANGE = "file.exchange";
-  public static final String QUEUE = "mc.file.queue";
-  //public static final String ROUTING_KEY = "file.uploaded";
+	public static final String EVENT_EXCHANGE = "file.event.exchange";
+	public static final String EVENT_QUEUE = "mc.file.event.queue";
+	public static final String UPLOADED_EVENT_KEY = "file.uploaded";
+	//public static final String DELETED_EVENT_KEY = "file.deleted";
+	
+	public static final String COMMAND_EXCHANGE = "file.command.exchange";
+	public static final String DELETE_COMMAND_KEY = "file.delete";
+  
 
   @Bean
-  public TopicExchange fileExchange() {
-      return new TopicExchange(EXCHANGE, true, false);
+  public TopicExchange eventExchange() {
+      return new TopicExchange(EVENT_EXCHANGE, true, false);
+  }
+  
+  @Bean
+  public TopicExchange commandExchange() {
+  	return new TopicExchange(COMMAND_EXCHANGE, true, false);
   }
 
   @Bean
-  public Queue fileUploadedQueue() {
+  public Queue fileEventQueue() {
       return QueueBuilder
-      		.durable(QUEUE)
+      		.durable(EVENT_QUEUE)
       		.build();
   }
 
   @Bean
-  public Binding binding() {
+  public Binding eventBinding() {
       return BindingBuilder
-          .bind(fileUploadedQueue())
-          .to(fileExchange())
+          .bind(fileEventQueue())
+          .to(eventExchange())
           .with("file.*");
   }
 

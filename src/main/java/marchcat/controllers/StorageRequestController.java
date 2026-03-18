@@ -13,17 +13,17 @@ import org.springframework.web.server.ResponseStatusException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import marchcat.pictures.UploadInitResponse;
-import marchcat.pictures.UploadService;
+import marchcat.pictures.DataService;
 import marchcat.security.TokenException;
 import marchcat.security.TokenManager;
 import marchcat.util.LoggingAspect;
 @Controller
 public class StorageRequestController {
 
-  private final UploadService uploadService;
+  private final DataService uploadService;
   private final TokenManager tokenManager;
 	
-	public StorageRequestController(UploadService uploadService, TokenManager tokenManager) {
+	public StorageRequestController(DataService uploadService, TokenManager tokenManager) {
 		this.uploadService = uploadService;
 		this.tokenManager = tokenManager;
 	}

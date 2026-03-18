@@ -1,15 +1,15 @@
 package marchcat.pictures.exception;
 
-public class UploadException extends RuntimeException {
+public class DataException extends RuntimeException {
 
 	private static final long serialVersionUID = -1915774824949338281L;
 
 	
-	public UploadException(String message) {
+	public DataException(String message) {
 		super(message);
 	}
 	
-	public UploadException(String message, Throwable cause) {
+	public DataException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }
